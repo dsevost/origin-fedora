@@ -30,7 +30,7 @@ COPY \
 #	--source-image-path=/usr/bin/openshift:tmp
 #
 
-RUN 
+RUN \
     setcap 'cap_net_bind_service=ep' /usr/bin/openshift
 
 LABEL io.k8s.display-name="OpenShift Origin Application Platform" \
