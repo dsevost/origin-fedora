@@ -72,7 +72,9 @@ ARG ZFS_REPO_FEDORA_REL
 
 RUN \
     FC_REL=${ZFS_REPO_FEDORA_REL:-"27"} ; \
-    rpm -ihv http://download.zfsonlinux.org/fedora/zfs-release.fc${FC_REL}.noarch.rpm && \
+    rpm -ihv http://download.zfsonlinux.org/fedora/zfs-release.fc${FC_REL}.noarch.rpm
+
+RUN \
     dnf install -y \
 	libnvpair1 \
 	libzfs2 \
@@ -81,4 +83,3 @@ RUN \
     dnf clean all
 
 VOLUME /etc/origin/node
-
