@@ -57,7 +57,7 @@ RUN \
 	sysvinit-tools \
 	xz \
 	" && \
-    dbf install -y $INSTALL_PKGS && \
+    dnf install -y $INSTALL_PKGS && \
     mkdir -p \
 	/usr/lib/systemd/system/{docker,origin-node}.service.d
 
