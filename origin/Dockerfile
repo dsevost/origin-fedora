@@ -8,7 +8,7 @@
 #
 # The standard name for this image is openshift/origin
 #
-FROM origin-pre
+FROM pre
 
 COPY \
     system-container/system-container-wrapper.sh \
@@ -22,11 +22,11 @@ COPY \
     /exports/
 
 #
-# openshift executable mustbe copied form openshift/origin docker image via OpenShift build feature like:
+# openshift executable must be copied form openshift/origin docker image via OpenShift build feature like:
 # oc new-build \
 #	--name origin-pre \
-#	-D "FROM origin-base\nADD tmp/openshift /usr/bin/\nRUN chmod 755 /usr/bin/openshift" \
-#	--source-image=openshift/origin:${ORENSHIFT_VERSION} \
+#	-D $"FROM origin-base\nCOPY tmp/openshift /usr/bin/\nRUN chmod 755 /usr/bin/openshift" \
+#	--source-image=origin-oprigin \
 #	--source-image-path=/usr/bin/openshift:tmp
 #
 
