@@ -72,7 +72,8 @@ ARG ZFS_REPO_FEDORA_REL
 
 RUN \
     FC_REL=${ZFS_REPO_FEDORA_REL:-"27"} ; \
-    rpm -ihv http://download.zfsonlinux.org/fedora/zfs-release.fc${FC_REL}.noarch.rpm
+    rpm -ihv http://download.zfsonlinux.org/fedora/zfs-release.fc${FC_REL}.noarch.rpm ; \
+    cat /etc/os-release
 
 RUN \
     dnf install -y \
