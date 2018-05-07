@@ -10,6 +10,6 @@
 #	docker build -t origin-source .
 #
 
-FROM fedora
+FROM fedora:27
 
 #COPY *.repo /etc/yum.repos.d/
