@@ -20,7 +20,7 @@ ENV \
 ENTRYPOINT [ "/usr/local/bin/origin-node-run.sh" ]
 
 COPY \
-    scripts/* 
+    scripts/* \
     /usr/local/bin/
 
 COPY \
