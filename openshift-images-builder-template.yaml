@@ -17,12 +17,12 @@ objects:
     tags:
     - from:
         kind: DockerImage
-        name: docker.io/library/fedora:27
+        name: docker.io/library/fedora:${BASE_IMAGE_VERSION}
       name: ${BASE_IMAGE_VERSION}
-    - from:
-        kind: ImageStreamTag
-        name: fedora:27
-      name: latest
+#    - from:
+#        kind: ImageStreamTag
+#        name: fedora:${BASE_IMAGE_VERSION}
+#      name: latest
 - apiVersion: v1
   kind: ImageStream
   metadata:
@@ -81,8 +81,6 @@ objects:
 - apiVersion: v1
   kind: ImageStream
   metadata:
-    labels:
-      build: node
     name: node
   spec:
     tags:
@@ -110,7 +108,10 @@ objects:
       type: Docker
     triggers:
     - type: ConfigChange
-    - imageChange: {}
+    - imageChange:
+        from:
+          kind: ImageStreamTag
+          name: fedora:${BASE_IMAGE_VERSION}
       type: ImageChange
 - apiVersion: v1
   kind: BuildConfig
@@ -135,8 +136,13 @@ objects:
       type: Docker
     triggers:
     - type: ConfigChange
-    - imageChange: {}
+    - imageChange:
+        from:
+          kind: ImageStreamTag
+          name: source:${OPENDHIFT_IMAGE_BUILD_VERSION}
       type: ImageChange
+#    - imageChange: {}
+#      type: ImageChange
 - apiVersion: v1
   kind: BuildConfig
   metadata:
@@ -167,6 +173,7 @@ objects:
           name: base:${OPENDHIFT_IMAGE_BUILD_VERSION}
       type: Docker
     triggers:
+    - type: ConfigChange
     - imageChange:
         from:
           kind: ImageStreamTag
@@ -177,7 +184,8 @@ objects:
           kind: ImageStreamTag
           name: base:${OPENDHIFT_IMAGE_BUILD_VERSION}
       type: ImageChange
-    - type: ConfigChange
+#    - imageChange: {}
+#      type: ImageChange
 - apiVersion: v1
   kind: BuildConfig
   metadata:
@@ -201,8 +209,13 @@ objects:
       type: Docker
     triggers:
     - type: ConfigChange
-    - imageChange: {}
+    - imageChange:
+        from:
+          kind: ImageStreamTag
+          name: pre:${OPENDHIFT_IMAGE_BUILD_VERSION}
       type: ImageChange
+#    - imageChange: {}
+#      type: ImageChange
 - apiVersion: v1
   kind: BuildConfig
   metadata:
@@ -238,6 +251,7 @@ objects:
           name: origin:${OPENDHIFT_IMAGE_BUILD_VERSION}
       type: Docker
     triggers:
+    - type: ConfigChange
     - imageChange:
         from:
           kind: ImageStreamTag
@@ -248,7 +262,8 @@ objects:
           kind: ImageStreamTag
           name: origin:${OPENDHIFT_IMAGE_BUILD_VERSION}
       type: ImageChange
-    - type: ConfigChange
+#    - imageChange: {}
+#      type: ImageChange
 - apiVersion: v1
   kind: BuildConfig
   metadata:
@@ -272,5 +287,10 @@ objects:
       type: Docker
     triggers:
     - type: ConfigChange
-    - imageChange: {}
+    - imageChange:
+        from:
+          kind: ImageStreamTag
+          name: pre-node:${OPENDHIFT_IMAGE_BUILD_VERSION}
       type: ImageChange
+#    - imageChange: {}
+#      type: ImageChange
