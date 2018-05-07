@@ -9,7 +9,7 @@
 #	docker build -t origin-base .
 #
 
-FROM origin-source
+FROM source
 
 #COPY *.repo /etc/yum.repos.d/
 RUN \
