@@ -8,7 +8,7 @@
 #
 # The standard name for this image is openshift/node
 #
-FROM pre
+FROM pre-node
 
 LABEL io.k8s.display-name="OpenShift Origin Node" \
       io.k8s.description="This is a component of OpenShift Origin and contains the software for individual nodes when using SDN." \
