@@ -35,6 +35,7 @@ COPY \
     /exports/
 
 #	origin-sdn-ovs \
+#	sysvinit-tools \
 RUN \
     INSTALL_PKGS="\
 	binutils \
@@ -54,7 +55,6 @@ RUN \
 	openssl \
 	openvswitch \
 	procps-ng \
-	sysvinit-tools \
 	xz \
 	" && \
     dnf install -y $INSTALL_PKGS && \
