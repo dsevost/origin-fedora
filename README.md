@@ -3,8 +3,11 @@
 ## Build from scratch
 ```
 $ export OPENSHIFT_VERSION=v3.9
+$ export FEDORA_RELEASE=27
 
 $ oc new-project origin-images
+
+$ oc import-image fedora --from=docker.io/fedora:${FEDORA_RELEASE} --confirm --scheduled
 
 $ oc new-build \
     https://github.com/dsevost/origin-fedora \
@@ -44,6 +47,7 @@ $ oc create -f node/node-pre-bc.yaml
 $ oc new-build \
     https://github.com/dsevost/origin-fedora \
     --context-dir=node \
+    --build-arg=ZFS_REPO_FEDORA_REL=${FEDORA_RELEASE} \
     --name node
 
 
