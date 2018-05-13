@@ -53,7 +53,7 @@ $ oc new-build \
     --context-dir=origin \
     --name origin
 
-$ oc import-image origin-node --from=docker.io/openshift/node:${OPENSHIFT_VERSION} --confirm --scheduled
+$ oc import-image node-origin --from=docker.io/openshift/node:${OPENSHIFT_VERSION} --confirm --scheduled
 
 $ oc create -f node/node-pre-bc.yaml
 
@@ -78,15 +78,63 @@ $ oc import-image origin-pod --from=docker.io/openshift/origin-pod:${OPENSHIFT_V
 $ oc new-build \
     --name pod \
     -D $'\
-	FROM source\nCOPY tmp/pod /usr/bin/\n\
+	FROM source\nCOPY tmp/pod /usr/bin/
 	LABEL \
 	    io.k8s.display-name="OpenShift Origin Pod Infrastructure" \
 	    io.k8s.description="This is a component of OpenShift Origin and holds on to the shared Linux namespaces within a Pod." \
-	    io.openshift.tags="openshift,pod"\n\
-	USER 1001\n\
-	ENTRYPOINT ["/usr/bin/pod"]\n\
+	    io.openshift.tags="openshift,pod"
+	USER 1001
+	ENTRYPOINT ["/usr/bin/pod"]
 	' \
     --source-image=origin-pod \
     --source-image-path=/usr/bin/pod:tmp
+
+$ oc new-build \
+    --name origin-pod \
+    -D $'\
+	FROM source
+	COPY tmp/pod /usr/bin/
+	LABEL \\
+	    io.k8s.display-name="OpenShift Origin Pod Infrastructure" \\
+	    io.k8s.description="This is a component of OpenShift Origin and holds on to the shared Linux namespaces within a Pod." \\
+	    io.openshift.tags="openshift,pod"
+	USER 1001
+	ENTRYPOINT ["/usr/bin/pod"]
+	' \
+    --source-image=pod-origin \
+    --source-image-path=/usr/bin/pod:tmp
+
+$ oc new-build \
+    --name origin-deployer \
+    -D $'\
+	FROM origin
+	LABEL io.k8s.display-name="OpenShift Origin Deployer" \
+	    io.k8s.description="This is a component of OpenShift Origin and executes the user deployment process to roll out new containers. It may be used as a base image for building your own custom deployer image." \
+	    io.openshift.tags="openshift,deployer"
+	USER 1001
+	ENTRYPOINT ["/usr/bin/openshift-deployer"]
+	'
+
+$ oc new-build \
+    --name origin-docker-builder \
+    -D $'\
+	FROM origin
+	LABEL io.k8s.display-name="OpenShift Origin Docker Builder" \
+	    io.k8s.description="This is a component of OpenShift Origin and is responsible for executing Docker image builds." \
+	    io.openshift.tags="openshift,builder"
+	USER 1001
+	ENTRYPOINT ["/usr/bin/openshift-docker-builder"]
+	'
+
+$ oc new-build \
+    --name origin-sti-builder \
+    -D $'\
+	FROM origin
+	LABEL io.k8s.display-name="OpenShift Origin S2I Builder" \
+	    io.k8s.description="This is a component of OpenShift Origin and is responsible for executing source-to-image (s2i) image builds." \
+	    io.openshift.tags="openshift,sti,s2i,builder"
+	USER 1001
+	ENTRYPOINT ["/usr/bin/openshift-s2i-builder"]
+	'
 
 ```

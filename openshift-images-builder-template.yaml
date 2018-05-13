@@ -149,9 +149,45 @@ objects:
 - apiVersion: v1
   kind: ImageStream
   metadata:
+    name: origin-pod
+    labels:
+      template: openshift-images-builder
+  spec:
+    tags:
+    - name: ${OPENDHIFT_IMAGE_BUILD_VERSION}
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
     labels:
       template: openshift-images-builder
     name: openvswitch
+  spec:
+    tags:
+    - name: ${OPENDHIFT_IMAGE_BUILD_VERSION}
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    name: origin-deployer
+    labels:
+      template: openshift-images-builder
+  spec:
+    tags:
+    - name: ${OPENDHIFT_IMAGE_BUILD_VERSION}
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    name: origin-docker-builder
+    labels:
+      template: openshift-images-builder
+  spec:
+    tags:
+    - name: ${OPENDHIFT_IMAGE_BUILD_VERSION}
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    name: origin-sti-builder
+    labels:
+      template: openshift-images-builder
   spec:
     tags:
     - name: ${OPENDHIFT_IMAGE_BUILD_VERSION}
@@ -518,3 +554,106 @@ objects:
           name: source:${OPENDHIFT_IMAGE_BUILD_VERSION}
       type: ImageChange
     - type: ConfigChange
+- apiVersion: v1
+  kind: BuildConfig
+  metadata:
+    labels:
+      template: openshift-images-builder
+    name: origin-deployer
+  spec:
+    runPolicy: SerialLatestOnly
+    output:
+      to:
+        kind: ImageStreamTag
+        name: origin-deployer:${OPENDHIFT_IMAGE_BUILD_VERSION}
+    source:
+      dockerfile: |-
+        FROM origin
+        LABEL \
+          io.k8s.display-name="OpenShift Origin Deployer" \
+          io.k8s.description="This is a component of OpenShift Origin and executes the user deployment process to roll out new containers. It may be used as a base image for building your own custom deployer image."
+          io.openshift.tags="openshift,deployer"
+        USER 1001
+        ENTRYPOINT [ "/usr/bin/openshift-deployer" ]
+      type: Dockerfile
+    strategy:
+      dockerStrategy:
+        from:
+          kind: ImageStreamTag
+          name: origin:${OPENDHIFT_IMAGE_BUILD_VERSION}
+      type: Docker
+    - type: ConfigChange
+    - imageChange:
+        from:
+          kind: ImageStreamTag
+          name: origin:${OPENDHIFT_IMAGE_BUILD_VERSION}
+      type: ImageChange
+- apiVersion: v1
+  kind: BuildConfig
+  metadata:
+    labels:
+      template: openshift-images-builder
+    name: origin-docker-builder
+  spec:
+    output:
+      to:
+        kind: ImageStreamTag
+        name: origin-docker-builder:${OPENDHIFT_IMAGE_BUILD_VERSION}
+    runPolicy: SerialLatestOnly
+    source:
+      dockerfile: |-
+        FROM origin
+        LABEL
+            io.k8s.display-name="OpenShift Origin Docker Builder" \
+            io.k8s.description="This is a component of OpenShift Origin and is responsible for executing Docker image builds." \
+            io.openshift.tags="openshift,builder"
+        USER 1001
+        ENTRYPOINT ["/usr/bin/openshift-docker-builder"]
+      type: Dockerfile
+    strategy:
+      dockerStrategy:
+        from:
+          kind: ImageStreamTag
+          name: origin:${OPENDHIFT_IMAGE_BUILD_VERSION}
+      type: Docker
+    triggers:
+    - type: ConfigChange
+    - imageChange:
+        from:
+          kind: ImageStreamTag
+          name: origin:${OPENDHIFT_IMAGE_BUILD_VERSION}
+      type: ImageChange
+- apiVersion: v1
+  kind: BuildConfig
+  metadata:
+    labels:
+      template: openshift-images-builder
+    name: origin-sti-builder
+  spec:
+    output:
+      to:
+        kind: ImageStreamTag
+        name: origin-sti-builder:${OPENDHIFT_IMAGE_BUILD_VERSION}
+    runPolicy: SerialLatestOnly
+    source:
+      dockerfile: |-
+        FROM origin
+        LABEL io.k8s.display-name="OpenShift Origin S2I Builder" \
+            io.k8s.description="This is a component of OpenShift Origin and is responsible for executing source-to-image (s2i) image builds." \
+            io.openshift.tags="openshift,sti,s2i,builder"
+        USER 1001
+        ENTRYPOINT ["/usr/bin/openshift-s2i-builder"]
+      type: Dockerfile
+    strategy:
+      dockerStrategy:
+        from:
+          kind: ImageStreamTag
+          name: origin:${OPENDHIFT_IMAGE_BUILD_VERSION}
+      type: Docker
+    triggers:
+    - type: ConfigChange
+    - imageChange:
+        from:
+          kind: ImageStreamTag
+          name: origin:${OPENDHIFT_IMAGE_BUILD_VERSION}
+      type: ImageChange

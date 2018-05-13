@@ -51,5 +51,6 @@ RUN \
     ln -s openshift openshift-git-clone && \
     ln -s openshift openshift-recycle && \
     ln -s openshift openshift-router && \
-    ln -s openshift openshift-sti-build && \
+    ln -s openshift openshift-s2i-build && \
+    ln -s openshift-s2i-build openshift-sti-build && \
     setcap 'cap_net_bind_service=ep' /usr/bin/openshift
