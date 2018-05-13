@@ -582,6 +582,7 @@ objects:
           kind: ImageStreamTag
           name: origin:${OPENDHIFT_IMAGE_BUILD_VERSION}
       type: Docker
+    triggers:
     - type: ConfigChange
     - imageChange:
         from:
