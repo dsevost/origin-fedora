@@ -40,7 +40,7 @@ objects:
 - apiVersion: v1
   kind: ImageStream
   metadata:
-    name: origin-node
+    name: node-origin
     labels:
       template: openshift-images-builder
   spec:
@@ -54,14 +54,14 @@ objects:
 - apiVersion: v1
   kind: ImageStream
   metadata:
-    name: origin-pod
+    name: pod-origin
     labels:
       template: openshift-images-builder
   spec:
     tags:
     - from:
         kind: DockerImage
-        name: docker.io/openshift/origin-pod:${OPENDHIFT_IMAGE_BUILD_VERSION}
+        name: docker.io/openshift/pod-origin:${OPENDHIFT_IMAGE_BUILD_VERSION}
       importPolicy:
         scheduled: true
       name: ${OPENDHIFT_IMAGE_BUILD_VERSION}
@@ -69,6 +69,15 @@ objects:
   kind: ImageStream
   metadata:
     name: source
+    labels:
+      template: openshift-images-builder
+  spec:
+    tags:
+    - name: ${OPENDHIFT_IMAGE_BUILD_VERSION}
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    name: origin-pod
     labels:
       template: openshift-images-builder
   spec:
@@ -374,14 +383,14 @@ objects:
       images:
       - from:
           kind: ImageStreamTag
-          name: origin-node:${OPENDHIFT_IMAGE_BUILD_VERSION}
+          name: node-origin:${OPENDHIFT_IMAGE_BUILD_VERSION}
         paths:
         - destinationDir: tmp1
           sourcePath: /etc/cni
         - destinationDir: tmp2
           sourcePath: /opt/cni
         - destinationDir: tmp3
-          sourcePath: /usr/lib/systemd/system/origin-node.service.d
+          sourcePath: /usr/lib/systemd/system/node-origin.service.d
       type: Dockerfile
     strategy:
       dockerStrategy:
@@ -394,7 +403,7 @@ objects:
     - imageChange:
         from:
           kind: ImageStreamTag
-          name: origin-node:${OPENDHIFT_IMAGE_BUILD_VERSION}
+          name: node-origin:${OPENDHIFT_IMAGE_BUILD_VERSION}
       type: ImageChange
     - imageChange:
         from:
@@ -464,29 +473,29 @@ objects:
 - apiVersion: v1
   kind: BuildConfig
   metadata:
-    name: pod
+    name: origin-pod
     labels:
       template: openshift-images-builder
   spec:
     output:
       to:
         kind: ImageStreamTag
-        name: pod:${OPENDHIFT_IMAGE_BUILD_VERSION}
+        name: origin-pod:${OPENDHIFT_IMAGE_BUILD_VERSION}
     runPolicy: SerialLatestOnly
     source:
       dockerfile: |-
         FROM source
         COPY tmp/pod /usr/bin/
-        LABEL
-          io.k8s.display-name="OpenShift Origin Pod Infrastructure"
-          io.k8s.description="This is a component of OpenShift Origin and holds on to the shared Linux namespaces within a Pod."
+        LABEL \
+          io.k8s.display-name="OpenShift Origin Pod Infrastructure" \
+          io.k8s.description="This is a component of OpenShift Origin and holds on to the shared Linux namespaces within a Pod." \
           io.openshift.tags="openshift,pod"
-          USER 1001
-          ENTRYPOINT [ "/usr/bin/pod" ]
+        USER 1001
+        ENTRYPOINT [ "/usr/bin/pod" ]
       images:
       - from:
           kind: ImageStreamTag
-          name: origin-pod:${OPENDHIFT_IMAGE_BUILD_VERSION}
+          name: pod-origin:${OPENDHIFT_IMAGE_BUILD_VERSION}
         paths:
         - destinationDir: tmp
           sourcePath: /usr/bin/pod
@@ -501,7 +510,7 @@ objects:
     - imageChange:
         from:
           kind: ImageStreamTag
-          name: origin-pod:${OPENDHIFT_IMAGE_BUILD_VERSION}
+          name: pod-origin:${OPENDHIFT_IMAGE_BUILD_VERSION}
       type: ImageChange
     - imageChange:
         from:
