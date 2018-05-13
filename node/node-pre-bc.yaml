@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: BuildConfig
 metadata:
-  name: node-pre
+  name: pre-node
 spec:
   output:
     to:
@@ -36,7 +36,7 @@ spec:
   - imageChange:
       from:
         kind: ImageStreamTag
-        name: origin-node:latest
+        name: node-origin:latest
     type: ImageChange
   - imageChange:
       from:
@@ -50,7 +50,4 @@ kind: ImageStream
 metadata:
   name: pre-node
 spec:
-  -
-    name: latest
-    referencePolicy:
-      type: ""
+  - name: latest
