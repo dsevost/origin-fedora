@@ -31,6 +31,17 @@ $ oc new-build \
 $ oc import-image origin-origin --from=docker.io/openshift/origin:${OPENSHIFT_VERSION} --confirm --scheduled
 
 $ oc new-build \
+    --name pre-cli \
+    -D $'FROM base\nCOPY tmp/oc /usr/bin/' \
+    --source-image=origin-origin \
+    --source-image-path=/usr/bin/oc:tmp
+
+$ oc new-build \
+    https://github.com/dsevost/origin-fedora \
+    --context-dir=cli \
+    --name cli
+
+$ oc new-build \
     --name pre \
     -D $'FROM base\nCOPY tmp/openshift /usr/bin/\nRUN chmod 755 /usr/bin/openshift' \
     --source-image=origin-origin \
