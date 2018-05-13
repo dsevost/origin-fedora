@@ -16,7 +16,7 @@ $ oc new-build \
     --context-dir=base \
     --name base
 
-$ oc import-image origin-origin --from=docker.io/openshift/origin:${OPENSHIFT_VERSION} --confirm
+$ oc import-image origin-origin --from=docker.io/openshift/origin:${OPENSHIFT_VERSION} --confirm --scheduled
 
 $ oc new-build \
     --name pre \
@@ -29,7 +29,7 @@ $ oc new-build \
     --context-dir=origin \
     --name origin
 
-$ oc import-image origin-node --from=docker.io/openshift/node:${OPENSHIFT_VERSION} --confirm
+$ oc import-image origin-node --from=docker.io/openshift/node:${OPENSHIFT_VERSION} --confirm --scheduled
 
 $ oc create -f node/node-pre-bc.yaml
 
@@ -45,14 +45,6 @@ $ oc new-build \
     https://github.com/dsevost/origin-fedora \
     --context-dir=node \
     --name node
-    
+
 
 ```
-
-/etc/cni/net.d
-/opt/cni/bin
-/opt/cni/bin/host-local
-/opt/cni/bin/loopback
-/opt/cni/bin/openshift-sdn
-/usr/lib/systemd/system/origin-node.service.d
-/usr/lib/systemd/system/origin-node.service.d/openshift-sdn-ovs.conf
