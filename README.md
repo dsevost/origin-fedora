@@ -44,7 +44,7 @@ $ oc new-build \
 
 $ oc new-build \
     --name pre \
-    -D $'FROM base\nCOPY tmp/openshift /usr/bin/\nRUN chmod 755 /usr/bin/openshift' \
+    -D $'FROM cli\nCOPY tmp/openshift /usr/bin/' \
     --source-image=origin-origin \
     --source-image-path=/usr/bin/openshift:tmp
 
@@ -72,5 +72,21 @@ $ oc new-build \
     --context-dir=etcd \
     --name=etcd \
     --to=etcd
+
+$ oc import-image origin-pod --from=docker.io/openshift/origin-pod:${OPENSHIFT_VERSION} --confirm --scheduled
+
+$ oc new-build \
+    --name pod \
+    -D $'\
+	FROM source\nCOPY tmp/pod /usr/bin/\n\
+	LABEL \
+	    io.k8s.display-name="OpenShift Origin Pod Infrastructure" \
+	    io.k8s.description="This is a component of OpenShift Origin and holds on to the shared Linux namespaces within a Pod." \
+	    io.openshift.tags="openshift,pod"\n\
+	USER 1001\n\
+	ENTRYPOINT ["/usr/bin/pod"]\n\
+	' \
+    --source-image=origin-pod \
+    --source-image-path=/usr/bin/pod:tmp
 
 ```
