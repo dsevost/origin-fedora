@@ -1,4 +1,4 @@
-FROM fedora
+FROM source
 
 ENV VERSION=0.1 RELEASE=10 ARCH=x86_64
 
