@@ -19,6 +19,7 @@ RUN \
 	" && \
     dnf install --setopt=tsflags=nodocs -y $INSTALL_PKGS && \
     dnf clean all && \
+    cd /usr/bin && ln -s oc kubectl && \
     set -x ; \
     FC_REL=${ZFS_REPO_FEDORA_REL:-"27"} ; \
     ZFS_VER=${ZFS_VERSION:-0.7.9-1.fc${FC_REL}} ; \
