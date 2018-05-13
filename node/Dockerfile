@@ -69,18 +69,28 @@ RUN \
     fi
 
 ARG ZFS_REPO_FEDORA_REL
+ARG ZFS_VERSION
 
 RUN \
+    set -x ; \
     FC_REL=${ZFS_REPO_FEDORA_REL:-"27"} ; \
-    rpm -ihv http://download.zfsonlinux.org/fedora/zfs-release.fc${FC_REL}.noarch.rpm ; \
-    cat /etc/os-release
+    ZFS_VER=${ZFS_VERSION:-0.7.9-1.fc${FC_REL}} ; \
+    rpms='' ; \
+    suffix="${ZFS_VER}.x86_64.rpm" ; \
+    for p in zfs libnvpair1 libuutil1 libzfs2 libzpool2 ; do rpms+="http://download.zfsonlinux.org/fedora/27/x86_64/$p-$suffix " ; done ; \
+    rpm -ihv --nodeps $rpms
 
-RUN \
-    dnf install -y \
-	libnvpair1 \
-	libzfs2 \
-	libzpool2 \
-	zfs && \
-    dnf clean all
+#RUN \
+#    FC_REL=${ZFS_REPO_FEDORA_REL:-"27"} ; \
+#    rpm -ihv http://download.zfsonlinux.org/fedora/zfs-release.fc${FC_REL}.noarch.rpm ; \
+#    cat /etc/os-release
+#
+#RUN \
+#    dnf install -y \
+#	libnvpair1 \
+#	libzfs2 \
+#	libzpool2 \
+#	zfs && \
+#    dnf clean all
 
 VOLUME /etc/origin/node
