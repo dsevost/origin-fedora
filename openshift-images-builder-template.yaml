@@ -106,6 +106,15 @@ objects:
     tags:
     - name: ${OPENDHIFT_IMAGE_BUILD_VERSION}
 - apiVersion: v1
+  kind: ImageStream
+  metadata:
+    labels:
+      template: openshift-images-builder
+    name: openvswitch
+  spec:
+    tags:
+    - name: ${OPENDHIFT_IMAGE_BUILD_VERSION}
+- apiVersion: v1
   kind: BuildConfig
   metadata:
     name: source
@@ -258,16 +267,16 @@ objects:
     source:
       dockerfile: |-
         FROM origin
-        COPY tmp1/* /etc/
-        COPY tmp2/* /opt/
-        COPY tmp3/* /usr/
+        COPY tmp1 /etc/
+        COPY tmp2 /opt/
+        COPY tmp3 /usr/
       images:
       - from:
           kind: ImageStreamTag
           name: origin-node:${OPENDHIFT_IMAGE_BUILD_VERSION}
         paths:
         - destinationDir: tmp1
-          sourcePath: /etc/cni/net.d
+          sourcePath: /etc/cni
         - destinationDir: tmp2
           sourcePath: /opt/cni
         - destinationDir: tmp3
@@ -328,3 +337,33 @@ objects:
       type: ImageChange
 #    - imageChange: {}
 #      type: ImageChange
+- apiVersion: v1
+  kind: BuildConfig
+  metadata:
+    labels:
+      template: openshift-images-builder
+    name: openvswitch
+  spec:
+    output:
+      to:
+        kind: ImageStreamTag
+        name: openvswitch:${OPENDHIFT_IMAGE_BUILD_VERSION}
+    runPolicy: SerialLatestOnly
+    source:
+      contextDir: openvswitch
+      git:
+        uri: https://github.com/dsevost/origin-fedora
+      type: Git
+    strategy:
+      dockerStrategy:
+        from:
+          kind: ImageStreamTag
+          name: node:${OPENDHIFT_IMAGE_BUILD_VERSION}
+      type: Docker
+    triggers:
+    - imageChange:
+        from:
+          kind: ImageStreamTag
+          name: node:${OPENDHIFT_IMAGE_BUILD_VERSION}
+      type: ImageChange
+    - type: ConfigChange
