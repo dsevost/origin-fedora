@@ -13,6 +13,8 @@ objects:
   kind: ImageStream
   metadata:
     name: fedora
+    labels:
+      template: openshift-images-builder
   spec:
     tags:
     - from:
@@ -25,6 +27,8 @@ objects:
   kind: ImageStream
   metadata:
     name: origin-origin
+    labels:
+      template: openshift-images-builder
   spec:
     tags:
     - from:
@@ -37,6 +41,8 @@ objects:
   kind: ImageStream
   metadata:
     name: origin-node
+    labels:
+      template: openshift-images-builder
   spec:
     tags:
     - from:
@@ -49,6 +55,8 @@ objects:
   kind: ImageStream
   metadata:
     name: source
+    labels:
+      template: openshift-images-builder
   spec:
     tags:
     - name: ${OPENDHIFT_IMAGE_BUILD_VERSION}
@@ -56,6 +64,8 @@ objects:
   kind: ImageStream
   metadata:
     name: base
+    labels:
+      template: openshift-images-builder
   spec:
     tags:
     - name: ${OPENDHIFT_IMAGE_BUILD_VERSION}
@@ -63,6 +73,8 @@ objects:
   kind: ImageStream
   metadata:
     name: pre
+    labels:
+      template: openshift-images-builder
   spec:
     tags:
     - name: ${OPENDHIFT_IMAGE_BUILD_VERSION}
@@ -70,6 +82,8 @@ objects:
   kind: ImageStream
   metadata:
     name: origin
+    labels:
+      template: openshift-images-builder
   spec:
     tags:
     - name: ${OPENDHIFT_IMAGE_BUILD_VERSION}
@@ -77,6 +91,8 @@ objects:
   kind: ImageStream
   metadata:
     name: pre-node
+    labels:
+      template: openshift-images-builder
   spec:
     tags:
     - name: ${OPENDHIFT_IMAGE_BUILD_VERSION}
@@ -84,6 +100,8 @@ objects:
   kind: ImageStream
   metadata:
     name: node
+    labels:
+      template: openshift-images-builder
   spec:
     tags:
     - name: ${OPENDHIFT_IMAGE_BUILD_VERSION}
@@ -91,6 +109,8 @@ objects:
   kind: BuildConfig
   metadata:
     name: source
+    labels:
+      template: openshift-images-builder
   spec:
     runPolicy: SerialLatestOnly
     output:
@@ -119,6 +139,8 @@ objects:
   kind: BuildConfig
   metadata:
     name: base
+    labels:
+      template: openshift-images-builder
   spec:
     runPolicy: SerialLatestOnly
     output:
@@ -149,6 +171,8 @@ objects:
   kind: BuildConfig
   metadata:
     name: pre
+    labels:
+      template: openshift-images-builder
   spec:
     runPolicy: SerialLatestOnly
     output:
@@ -159,7 +183,6 @@ objects:
       dockerfile: |-
         FROM base:${OPENDHIFT_IMAGE_BUILD_VERSION}
         COPY tmp/openshift /usr/bin/
-        RUN chmod 755 /usr/bin/openshift
       images:
       - from:
           kind: ImageStreamTag
@@ -192,6 +215,8 @@ objects:
   kind: BuildConfig
   metadata:
     name: origin
+    labels:
+      template: openshift-images-builder
   spec:
     runPolicy: SerialLatestOnly
     output:
@@ -222,6 +247,8 @@ objects:
   kind: BuildConfig
   metadata:
     name: node-pre
+    labels:
+      template: openshift-images-builder
   spec:
     runPolicy: SerialLatestOnly
     output:
@@ -270,6 +297,8 @@ objects:
   kind: BuildConfig
   metadata:
     name: node
+    labels:
+      template: openshift-images-builder
   spec:
     runPolicy: SerialLatestOnly
     output:
