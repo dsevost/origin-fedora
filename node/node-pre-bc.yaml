@@ -10,16 +10,17 @@ spec:
   source:
     dockerfile: |-
       FROM origin
-      COPY tmp1/* /etc/
-      COPY tmp2/* /opt/
-      COPY tmp3/* /usr/
+      COPY tmp1 tmp2 tmp3 /root/tmp/
+      COPY tmp1 /etc/
+      COPY tmp2 /opt/
+      COPY tmp3 /usr/
     images:
     - from:
         kind: ImageStreamTag
         name: origin-node:latest
       paths:
       - destinationDir: tmp1
-        sourcePath: /etc/cni/net.d
+        sourcePath: /etc/cni
       - destinationDir: tmp2
         sourcePath: /opt/cni
       - destinationDir: tmp3
