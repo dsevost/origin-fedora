@@ -565,7 +565,7 @@ objects:
           io.k8s.description="This is a component of OpenShift Origin and executes the user deployment process to roll out new containers. It may be used as a base image for building your own custom deployer image." \
           io.openshift.tags="openshift,deployer"
         USER 1001
-        ENTRYPOINT [ "/usr/bin/openshift-deployer" ]
+        ENTRYPOINT [ "/usr/bin/openshift-deploy" ]
       type: Dockerfile
     strategy:
       dockerStrategy:
