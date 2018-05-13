@@ -21,6 +21,19 @@ COPY \
     system-container/tmpfiles.template \
     /exports/
 
+LABEL \
+    io.k8s.display-name="OpenShift Origin Application Platform" \
+    io.k8s.description="OpenShift Origin is a platform for developing, building, and deploying containerized applications." \
+    io.openshift.tags="openshift,core"
+
+ENV \
+    HOME=/root \
+    OPENSHIFT_CONTAINERIZED=true \
+    KUBECONFIG=/var/lib/origin/openshift.local.config/master/admin.kubeconfig
+
+WORKDIR /var/lib/origin
+
+ENTRYPOINT ["/usr/bin/openshift"]
 #
 # openshift executable must be copied form openshift/origin docker image via OpenShift build feature like:
 # oc new-build \
@@ -31,19 +44,12 @@ COPY \
 #
 
 RUN \
+    cd /usr/bin && \
+    ln -s openshift openshift-deploy && \
+    ln -s openshift openshift-docker-build && \
+    ln -s openshift openshift-extract-image-content && \
+    ln -s openshift openshift-git-clone && \
+    ln -s openshift openshift-recycle && \
+    ln -s openshift openshift-router && \
+    ln -s openshift openshift-sti-build && \
     setcap 'cap_net_bind_service=ep' /usr/bin/openshift
-
-LABEL io.k8s.display-name="OpenShift Origin Application Platform" \
-      io.k8s.description="OpenShift Origin is a platform for developing, building, and deploying containerized applications." \
-      io.openshift.tags="openshift,core"
-
-ENV \
-    HOME=/root \
-    OPENSHIFT_CONTAINERIZED=true \
-    KUBECONFIG=/var/lib/origin/openshift.local.config/master/admin.kubeconfig
-
-WORKDIR /var/lib/origin
-
-EXPOSE 8443 53
-
-ENTRYPOINT ["/usr/bin/openshift"]
