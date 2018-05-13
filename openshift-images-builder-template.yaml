@@ -77,15 +77,6 @@ objects:
 - apiVersion: v1
   kind: ImageStream
   metadata:
-    name: origin-pod
-    labels:
-      template: openshift-images-builder
-  spec:
-    tags:
-    - name: ${OPENDHIFT_IMAGE_BUILD_VERSION}
-- apiVersion: v1
-  kind: ImageStream
-  metadata:
     name: base
     labels:
       template: openshift-images-builder
@@ -571,7 +562,7 @@ objects:
         FROM origin
         LABEL \
           io.k8s.display-name="OpenShift Origin Deployer" \
-          io.k8s.description="This is a component of OpenShift Origin and executes the user deployment process to roll out new containers. It may be used as a base image for building your own custom deployer image."
+          io.k8s.description="This is a component of OpenShift Origin and executes the user deployment process to roll out new containers. It may be used as a base image for building your own custom deployer image." \
           io.openshift.tags="openshift,deployer"
         USER 1001
         ENTRYPOINT [ "/usr/bin/openshift-deployer" ]
@@ -604,7 +595,7 @@ objects:
     source:
       dockerfile: |-
         FROM origin
-        LABEL
+        LABEL \
             io.k8s.display-name="OpenShift Origin Docker Builder" \
             io.k8s.description="This is a component of OpenShift Origin and is responsible for executing Docker image builds." \
             io.openshift.tags="openshift,builder"
@@ -639,7 +630,8 @@ objects:
     source:
       dockerfile: |-
         FROM origin
-        LABEL io.k8s.display-name="OpenShift Origin S2I Builder" \
+        LABEL \
+            io.k8s.display-name="OpenShift Origin S2I Builder" \
             io.k8s.description="This is a component of OpenShift Origin and is responsible for executing source-to-image (s2i) image builds." \
             io.openshift.tags="openshift,sti,s2i,builder"
         USER 1001
