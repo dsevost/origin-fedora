@@ -767,3 +767,70 @@ objects:
           name: origin:${OPENDHIFT_IMAGE_BUILD_VERSION}
       type: ImageChange
     - type: ConfigChange
+- apiVersion: v1
+  kind: BuildConfig
+  metadata:
+    labels:
+      template: openshift-images-builder
+    name: pre-registry
+  spec:
+    output:
+      to:
+        kind: ImageStreamTag
+        name: pre-registry:${OPENDHIFT_IMAGE_BUILD_VERSION}
+    runPolicy: SerialLatestOnly
+    source:
+      dockerfile: |-
+        FROM base
+        COPY tmp/dockerregistry /usr/bin/
+      images:
+      - from:
+          kind: ImageStreamTag
+          name: source-origin-docker-registry:${OPENDHIFT_IMAGE_BUILD_VERSION}
+        paths:
+        - destinationDir: tmp
+          sourcePath: /usr/bin/dockerregistry
+      type: Dockerfile
+    strategy:
+      dockerStrategy:
+        from:
+          kind: ImageStreamTag
+          name: base:${OPENDHIFT_IMAGE_BUILD_VERSION}
+      type: Docker
+    triggers:
+    - type: ConfigChange
+    - imageChange:
+        from:
+          kind: ImageStreamTag
+          name: base:${OPENDHIFT_IMAGE_BUILD_VERSION}
+      type: ImageChange
+- apiVersion: v1
+  kind: BuildConfig
+  metadata:
+    labels:
+      template: openshift-images-builder
+    name: origin-docker-registry
+  spec:
+    output:
+      to:
+        kind: ImageStreamTag
+        name: origin-docker-registry:${OPENDHIFT_IMAGE_BUILD_VERSION}
+    runPolicy: SerialLatestOnly
+    source:
+      contextDir: registry
+      git:
+        uri: https://github.com/dsevost/origin-fedora
+      type: Git
+    strategy:
+      dockerStrategy:
+        from:
+          kind: ImageStreamTag
+          name: pre-registry:${OPENDHIFT_IMAGE_BUILD_VERSION}
+      type: Docker
+    triggers:
+    - imageChange:
+        from:
+          kind: ImageStreamTag
+          name: pre-registry:${OPENDHIFT_IMAGE_BUILD_VERSION}
+      type: ImageChange
+    - type: ConfigChange
