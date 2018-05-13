@@ -56,4 +56,10 @@ $ oc new-build \
     --context-dir=openvswitch \
     --name openvswitch
 
+$ oc new-build \
+    https://github.com/dsevost/origin-fedora \
+    --context-dir=etcd \
+    --name=etcd \
+    --to=etcd
+
 ```
