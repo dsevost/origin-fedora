@@ -13,6 +13,9 @@ origin \
 origin-deployer \
 origin-docker-builder \
 origin-sti-builder \
+origin-docker-registry \
+origin-haproxy-router \
+origin-nginx-router \
 node \
 openvswitch \
 "

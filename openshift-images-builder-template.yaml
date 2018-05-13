@@ -6,7 +6,7 @@ parameters:
 - name: BASE_IMAGE_VERSION
   description: Fedora base Image version, default is 27
   value: "27"
-- name: OPENDHIFT_IMAGE_BUILD_VERSION
+- name: OPENSHIFT_IMAGE_BUILD_VERSION
   value: v3.9
 objects:
 - apiVersion: v1
@@ -33,8 +33,8 @@ objects:
     tags:
     - from:
         kind: DockerImage
-        name: docker.io/openshift/origin:${OPENDHIFT_IMAGE_BUILD_VERSION}
-      name: ${OPENDHIFT_IMAGE_BUILD_VERSION}
+        name: docker.io/openshift/origin:${OPENSHIFT_IMAGE_BUILD_VERSION}
+      name: ${OPENSHIFT_IMAGE_BUILD_VERSION}
       importPolicy:
         scheduled: true
 - apiVersion: v1
@@ -47,8 +47,8 @@ objects:
     tags:
     - from:
         kind: DockerImage
-        name: docker.io/openshift/node:${OPENDHIFT_IMAGE_BUILD_VERSION}
-      name: ${OPENDHIFT_IMAGE_BUILD_VERSION}
+        name: docker.io/openshift/node:${OPENSHIFT_IMAGE_BUILD_VERSION}
+      name: ${OPENSHIFT_IMAGE_BUILD_VERSION}
       importPolicy:
         scheduled: true
 - apiVersion: v1
@@ -61,10 +61,24 @@ objects:
     tags:
     - from:
         kind: DockerImage
-        name: docker.io/openshift/origin-pod:${OPENDHIFT_IMAGE_BUILD_VERSION}
+        name: docker.io/openshift/origin-pod:${OPENSHIFT_IMAGE_BUILD_VERSION}
       importPolicy:
         scheduled: true
-      name: ${OPENDHIFT_IMAGE_BUILD_VERSION}
+      name: ${OPENSHIFT_IMAGE_BUILD_VERSION}
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    name: source-origin-docker-registry
+    labels:
+      template: openshift-images-builder
+  spec:
+    tags:
+    - from:
+        kind: DockerImage
+        name: docker.io/openshift/origin-docker-registry:${OPENSHIFT_IMAGE_BUILD_VERSION}
+      importPolicy:
+        scheduled: true
+      name: ${OPENSHIFT_IMAGE_BUILD_VERSION}
 - apiVersion: v1
   kind: ImageStream
   metadata:
@@ -73,7 +87,7 @@ objects:
       template: openshift-images-builder
   spec:
     tags:
-    - name: ${OPENDHIFT_IMAGE_BUILD_VERSION}
+    - name: ${OPENSHIFT_IMAGE_BUILD_VERSION}
 - apiVersion: v1
   kind: ImageStream
   metadata:
@@ -82,7 +96,7 @@ objects:
       template: openshift-images-builder
   spec:
     tags:
-    - name: ${OPENDHIFT_IMAGE_BUILD_VERSION}
+    - name: ${OPENSHIFT_IMAGE_BUILD_VERSION}
 - apiVersion: v1
   kind: ImageStream
   metadata:
@@ -91,7 +105,7 @@ objects:
       template: openshift-images-builder
   spec:
     tags:
-    - name: ${OPENDHIFT_IMAGE_BUILD_VERSION}
+    - name: ${OPENSHIFT_IMAGE_BUILD_VERSION}
 - apiVersion: v1
   kind: ImageStream
   metadata:
@@ -100,7 +114,7 @@ objects:
       template: openshift-images-builder
   spec:
     tags:
-    - name: ${OPENDHIFT_IMAGE_BUILD_VERSION}
+    - name: ${OPENSHIFT_IMAGE_BUILD_VERSION}
 - apiVersion: v1
   kind: ImageStream
   metadata:
@@ -109,7 +123,7 @@ objects:
       template: openshift-images-builder
   spec:
     tags:
-    - name: ${OPENDHIFT_IMAGE_BUILD_VERSION}
+    - name: ${OPENSHIFT_IMAGE_BUILD_VERSION}
 - apiVersion: v1
   kind: ImageStream
   metadata:
@@ -118,7 +132,7 @@ objects:
       template: openshift-images-builder
   spec:
     tags:
-    - name: ${OPENDHIFT_IMAGE_BUILD_VERSION}
+    - name: ${OPENSHIFT_IMAGE_BUILD_VERSION}
 - apiVersion: v1
   kind: ImageStream
   metadata:
@@ -127,7 +141,7 @@ objects:
       template: openshift-images-builder
   spec:
     tags:
-    - name: ${OPENDHIFT_IMAGE_BUILD_VERSION}
+    - name: ${OPENSHIFT_IMAGE_BUILD_VERSION}
 - apiVersion: v1
   kind: ImageStream
   metadata:
@@ -136,7 +150,7 @@ objects:
       template: openshift-images-builder
   spec:
     tags:
-    - name: ${OPENDHIFT_IMAGE_BUILD_VERSION}
+    - name: ${OPENSHIFT_IMAGE_BUILD_VERSION}
 - apiVersion: v1
   kind: ImageStream
   metadata:
@@ -145,7 +159,7 @@ objects:
       template: openshift-images-builder
   spec:
     tags:
-    - name: ${OPENDHIFT_IMAGE_BUILD_VERSION}
+    - name: ${OPENSHIFT_IMAGE_BUILD_VERSION}
 - apiVersion: v1
   kind: ImageStream
   metadata:
@@ -154,7 +168,7 @@ objects:
       template: openshift-images-builder
   spec:
     tags:
-    - name: ${OPENDHIFT_IMAGE_BUILD_VERSION}
+    - name: ${OPENSHIFT_IMAGE_BUILD_VERSION}
 - apiVersion: v1
   kind: ImageStream
   metadata:
@@ -163,7 +177,7 @@ objects:
     name: openvswitch
   spec:
     tags:
-    - name: ${OPENDHIFT_IMAGE_BUILD_VERSION}
+    - name: ${OPENSHIFT_IMAGE_BUILD_VERSION}
 - apiVersion: v1
   kind: ImageStream
   metadata:
@@ -172,7 +186,7 @@ objects:
       template: openshift-images-builder
   spec:
     tags:
-    - name: ${OPENDHIFT_IMAGE_BUILD_VERSION}
+    - name: ${OPENSHIFT_IMAGE_BUILD_VERSION}
 - apiVersion: v1
   kind: ImageStream
   metadata:
@@ -181,7 +195,7 @@ objects:
       template: openshift-images-builder
   spec:
     tags:
-    - name: ${OPENDHIFT_IMAGE_BUILD_VERSION}
+    - name: ${OPENSHIFT_IMAGE_BUILD_VERSION}
 - apiVersion: v1
   kind: ImageStream
   metadata:
@@ -190,7 +204,7 @@ objects:
       template: openshift-images-builder
   spec:
     tags:
-    - name: ${OPENDHIFT_IMAGE_BUILD_VERSION}
+    - name: ${OPENSHIFT_IMAGE_BUILD_VERSION}
 - apiVersion: v1
   kind: ImageStream
   metadata:
@@ -199,7 +213,7 @@ objects:
       template: openshift-images-builder
   spec:
     tags:
-    - name: ${OPENDHIFT_IMAGE_BUILD_VERSION}
+    - name: ${OPENSHIFT_IMAGE_BUILD_VERSION}
 - apiVersion: v1
   kind: ImageStream
   metadata:
@@ -208,7 +222,25 @@ objects:
       template: openshift-images-builder
   spec:
     tags:
-    - name: ${OPENDHIFT_IMAGE_BUILD_VERSION}
+    - name: ${OPENSHIFT_IMAGE_BUILD_VERSION}
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    name: pre-registry
+    labels:
+      template: openshift-images-builder
+  spec:
+    tags:
+    - name: ${OPENSHIFT_IMAGE_BUILD_VERSION}
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    name: origin-docker-registry
+    labels:
+      template: openshift-images-builder
+  spec:
+    tags:
+    - name: ${OPENSHIFT_IMAGE_BUILD_VERSION}
 - apiVersion: v1
   kind: BuildConfig
   metadata:
@@ -220,7 +252,7 @@ objects:
     output:
       to:
         kind: ImageStreamTag
-        name: source:${OPENDHIFT_IMAGE_BUILD_VERSION}
+        name: source:${OPENSHIFT_IMAGE_BUILD_VERSION}
     source:
       contextDir: source
       git:
@@ -250,7 +282,7 @@ objects:
     output:
       to:
         kind: ImageStreamTag
-        name: etcd:${OPENDHIFT_IMAGE_BUILD_VERSION}
+        name: etcd:${OPENSHIFT_IMAGE_BUILD_VERSION}
     source:
       contextDir: etcd
       git:
@@ -260,14 +292,14 @@ objects:
       dockerStrategy:
         from:
           kind: ImageStreamTag
-          name: source:${OPENDHIFT_IMAGE_BUILD_VERSION}
+          name: source:${OPENSHIFT_IMAGE_BUILD_VERSION}
       type: Docker
     triggers:
     - type: ConfigChange
     - imageChange:
         from:
           kind: ImageStreamTag
-          name: source:${OPENDHIFT_IMAGE_BUILD_VERSION}
+          name: source:${OPENSHIFT_IMAGE_BUILD_VERSION}
       type: ImageChange
 - apiVersion: v1
   kind: BuildConfig
@@ -280,7 +312,7 @@ objects:
     output:
       to:
         kind: ImageStreamTag
-        name: base:${OPENDHIFT_IMAGE_BUILD_VERSION}
+        name: base:${OPENSHIFT_IMAGE_BUILD_VERSION}
     source:
       contextDir: base
       git:
@@ -290,14 +322,14 @@ objects:
       dockerStrategy:
         from:
           kind: ImageStreamTag
-          name: source:${OPENDHIFT_IMAGE_BUILD_VERSION}
+          name: source:${OPENSHIFT_IMAGE_BUILD_VERSION}
       type: Docker
     triggers:
     - type: ConfigChange
     - imageChange:
         from:
           kind: ImageStreamTag
-          name: source:${OPENDHIFT_IMAGE_BUILD_VERSION}
+          name: source:${OPENSHIFT_IMAGE_BUILD_VERSION}
       type: ImageChange
 - apiVersion: v1
   kind: BuildConfig
@@ -310,7 +342,7 @@ objects:
     output:
       to:
         kind: ImageStreamTag
-        name: pre-cli:${OPENDHIFT_IMAGE_BUILD_VERSION}
+        name: pre-cli:${OPENSHIFT_IMAGE_BUILD_VERSION}
     source:
       dockerfile: |-
         FROM base
@@ -318,7 +350,7 @@ objects:
       images:
       - from:
           kind: ImageStreamTag
-          name: source-origin:${OPENDHIFT_IMAGE_BUILD_VERSION}
+          name: source-origin:${OPENSHIFT_IMAGE_BUILD_VERSION}
         paths:
         - destinationDir: tmp
           sourcePath: /usr/bin/oc
@@ -327,18 +359,18 @@ objects:
       dockerStrategy:
         from:
           kind: ImageStreamTag
-          name: base:${OPENDHIFT_IMAGE_BUILD_VERSION}
+          name: base:${OPENSHIFT_IMAGE_BUILD_VERSION}
       type: Docker
     triggers:
     - imageChange:
         from:
           kind: ImageStreamTag
-          name: source-origin:${OPENDHIFT_IMAGE_BUILD_VERSION}
+          name: source-origin:${OPENSHIFT_IMAGE_BUILD_VERSION}
       type: ImageChange
     - imageChange:
         from:
           kind: ImageStreamTag
-          name: base:${OPENDHIFT_IMAGE_BUILD_VERSION}
+          name: base:${OPENSHIFT_IMAGE_BUILD_VERSION}
       type: ImageChange
     - type: ConfigChange
 - apiVersion: v1
@@ -351,7 +383,7 @@ objects:
     output:
       to:
         kind: ImageStreamTag
-        name: cli:${OPENDHIFT_IMAGE_BUILD_VERSION}
+        name: cli:${OPENSHIFT_IMAGE_BUILD_VERSION}
     runPolicy: SerialLatestOnly
     source:
       contextDir: cli
@@ -365,14 +397,14 @@ objects:
           value: ${BASE_IMAGE_VERSION}
         from:
           kind: ImageStreamTag
-          name: pre-cli:${OPENDHIFT_IMAGE_BUILD_VERSION}
+          name: pre-cli:${OPENSHIFT_IMAGE_BUILD_VERSION}
       type: Docker
     triggers:
     - type: ConfigChange
     - imageChange:
         from:
           kind: ImageStreamTag
-          name: pre-cli:${OPENDHIFT_IMAGE_BUILD_VERSION}
+          name: pre-cli:${OPENSHIFT_IMAGE_BUILD_VERSION}
       type: ImageChange
 - apiVersion: v1
   kind: BuildConfig
@@ -385,7 +417,7 @@ objects:
     output:
       to:
         kind: ImageStreamTag
-        name: pre:${OPENDHIFT_IMAGE_BUILD_VERSION}
+        name: pre:${OPENSHIFT_IMAGE_BUILD_VERSION}
     source:
       dockerfile: |-
         FROM cli
@@ -393,7 +425,7 @@ objects:
       images:
       - from:
           kind: ImageStreamTag
-          name: source-origin:${OPENDHIFT_IMAGE_BUILD_VERSION}
+          name: source-origin:${OPENSHIFT_IMAGE_BUILD_VERSION}
         paths:
         - destinationDir: tmp
           sourcePath: /usr/bin/openshift
@@ -402,19 +434,19 @@ objects:
       dockerStrategy:
         from:
           kind: ImageStreamTag
-          name: cli:${OPENDHIFT_IMAGE_BUILD_VERSION}
+          name: cli:${OPENSHIFT_IMAGE_BUILD_VERSION}
       type: Docker
     triggers:
     - type: ConfigChange
     - imageChange:
         from:
           kind: ImageStreamTag
-          name: source-origin:${OPENDHIFT_IMAGE_BUILD_VERSION}
+          name: source-origin:${OPENSHIFT_IMAGE_BUILD_VERSION}
       type: ImageChange
     - imageChange:
         from:
           kind: ImageStreamTag
-          name: cli:${OPENDHIFT_IMAGE_BUILD_VERSION}
+          name: cli:${OPENSHIFT_IMAGE_BUILD_VERSION}
       type: ImageChange
 - apiVersion: v1
   kind: BuildConfig
@@ -427,7 +459,7 @@ objects:
     output:
       to:
         kind: ImageStreamTag
-        name: origin:${OPENDHIFT_IMAGE_BUILD_VERSION}
+        name: origin:${OPENSHIFT_IMAGE_BUILD_VERSION}
     source:
       contextDir: origin
       git:
@@ -437,14 +469,14 @@ objects:
       dockerStrategy:
         from:
           kind: ImageStreamTag
-          name: pre:${OPENDHIFT_IMAGE_BUILD_VERSION}
+          name: pre:${OPENSHIFT_IMAGE_BUILD_VERSION}
       type: Docker
     triggers:
     - type: ConfigChange
     - imageChange:
         from:
           kind: ImageStreamTag
-          name: pre:${OPENDHIFT_IMAGE_BUILD_VERSION}
+          name: pre:${OPENSHIFT_IMAGE_BUILD_VERSION}
       type: ImageChange
 - apiVersion: v1
   kind: BuildConfig
@@ -457,7 +489,7 @@ objects:
     output:
       to:
         kind: ImageStreamTag
-        name: pre-node:${OPENDHIFT_IMAGE_BUILD_VERSION}
+        name: pre-node:${OPENSHIFT_IMAGE_BUILD_VERSION}
     source:
       dockerfile: |-
         FROM origin
@@ -467,7 +499,7 @@ objects:
       images:
       - from:
           kind: ImageStreamTag
-          name: source-node:${OPENDHIFT_IMAGE_BUILD_VERSION}
+          name: source-node:${OPENSHIFT_IMAGE_BUILD_VERSION}
         paths:
         - destinationDir: tmp1
           sourcePath: /etc/cni
@@ -480,19 +512,19 @@ objects:
       dockerStrategy:
         from:
           kind: ImageStreamTag
-          name: origin:${OPENDHIFT_IMAGE_BUILD_VERSION}
+          name: origin:${OPENSHIFT_IMAGE_BUILD_VERSION}
       type: Docker
     triggers:
     - type: ConfigChange
     - imageChange:
         from:
           kind: ImageStreamTag
-          name: source-node:${OPENDHIFT_IMAGE_BUILD_VERSION}
+          name: source-node:${OPENSHIFT_IMAGE_BUILD_VERSION}
       type: ImageChange
     - imageChange:
         from:
           kind: ImageStreamTag
-          name: origin:${OPENDHIFT_IMAGE_BUILD_VERSION}
+          name: origin:${OPENSHIFT_IMAGE_BUILD_VERSION}
       type: ImageChange
 - apiVersion: v1
   kind: BuildConfig
@@ -505,7 +537,7 @@ objects:
     output:
       to:
         kind: ImageStreamTag
-        name: node:${OPENDHIFT_IMAGE_BUILD_VERSION}
+        name: node:${OPENSHIFT_IMAGE_BUILD_VERSION}
     source:
       contextDir: node
       git:
@@ -515,14 +547,14 @@ objects:
       dockerStrategy:
         from:
           kind: ImageStreamTag
-          name: pre-node:${OPENDHIFT_IMAGE_BUILD_VERSION}
+          name: pre-node:${OPENSHIFT_IMAGE_BUILD_VERSION}
       type: Docker
     triggers:
     - type: ConfigChange
     - imageChange:
         from:
           kind: ImageStreamTag
-          name: pre-node:${OPENDHIFT_IMAGE_BUILD_VERSION}
+          name: pre-node:${OPENSHIFT_IMAGE_BUILD_VERSION}
       type: ImageChange
 - apiVersion: v1
   kind: BuildConfig
@@ -534,7 +566,7 @@ objects:
     output:
       to:
         kind: ImageStreamTag
-        name: openvswitch:${OPENDHIFT_IMAGE_BUILD_VERSION}
+        name: openvswitch:${OPENSHIFT_IMAGE_BUILD_VERSION}
     runPolicy: SerialLatestOnly
     source:
       contextDir: openvswitch
@@ -545,13 +577,13 @@ objects:
       dockerStrategy:
         from:
           kind: ImageStreamTag
-          name: node:${OPENDHIFT_IMAGE_BUILD_VERSION}
+          name: node:${OPENSHIFT_IMAGE_BUILD_VERSION}
       type: Docker
     triggers:
     - imageChange:
         from:
           kind: ImageStreamTag
-          name: node:${OPENDHIFT_IMAGE_BUILD_VERSION}
+          name: node:${OPENSHIFT_IMAGE_BUILD_VERSION}
       type: ImageChange
     - type: ConfigChange
 - apiVersion: v1
@@ -564,7 +596,7 @@ objects:
     output:
       to:
         kind: ImageStreamTag
-        name: origin-pod:${OPENDHIFT_IMAGE_BUILD_VERSION}
+        name: origin-pod:${OPENSHIFT_IMAGE_BUILD_VERSION}
     runPolicy: SerialLatestOnly
     source:
       dockerfile: |-
@@ -579,7 +611,7 @@ objects:
       images:
       - from:
           kind: ImageStreamTag
-          name: source-origin-pod:${OPENDHIFT_IMAGE_BUILD_VERSION}
+          name: source-origin-pod:${OPENSHIFT_IMAGE_BUILD_VERSION}
         paths:
         - destinationDir: tmp
           sourcePath: /usr/bin/pod
@@ -588,18 +620,18 @@ objects:
       dockerStrategy:
         from:
           kind: ImageStreamTag
-          name: source:${OPENDHIFT_IMAGE_BUILD_VERSION}
+          name: source:${OPENSHIFT_IMAGE_BUILD_VERSION}
       type: Docker
     triggers:
     - imageChange:
         from:
           kind: ImageStreamTag
-          name: source-origin-pod:${OPENDHIFT_IMAGE_BUILD_VERSION}
+          name: source-origin-pod:${OPENSHIFT_IMAGE_BUILD_VERSION}
       type: ImageChange
     - imageChange:
         from:
           kind: ImageStreamTag
-          name: source:${OPENDHIFT_IMAGE_BUILD_VERSION}
+          name: source:${OPENSHIFT_IMAGE_BUILD_VERSION}
       type: ImageChange
     - type: ConfigChange
 - apiVersion: v1
@@ -613,7 +645,7 @@ objects:
     output:
       to:
         kind: ImageStreamTag
-        name: origin-deployer:${OPENDHIFT_IMAGE_BUILD_VERSION}
+        name: origin-deployer:${OPENSHIFT_IMAGE_BUILD_VERSION}
     source:
       dockerfile: |-
         FROM origin
@@ -628,14 +660,14 @@ objects:
       dockerStrategy:
         from:
           kind: ImageStreamTag
-          name: origin:${OPENDHIFT_IMAGE_BUILD_VERSION}
+          name: origin:${OPENSHIFT_IMAGE_BUILD_VERSION}
       type: Docker
     triggers:
     - type: ConfigChange
     - imageChange:
         from:
           kind: ImageStreamTag
-          name: origin:${OPENDHIFT_IMAGE_BUILD_VERSION}
+          name: origin:${OPENSHIFT_IMAGE_BUILD_VERSION}
       type: ImageChange
 - apiVersion: v1
   kind: BuildConfig
@@ -647,7 +679,7 @@ objects:
     output:
       to:
         kind: ImageStreamTag
-        name: origin-docker-builder:${OPENDHIFT_IMAGE_BUILD_VERSION}
+        name: origin-docker-builder:${OPENSHIFT_IMAGE_BUILD_VERSION}
     runPolicy: SerialLatestOnly
     source:
       dockerfile: |-
@@ -663,14 +695,14 @@ objects:
       dockerStrategy:
         from:
           kind: ImageStreamTag
-          name: origin:${OPENDHIFT_IMAGE_BUILD_VERSION}
+          name: origin:${OPENSHIFT_IMAGE_BUILD_VERSION}
       type: Docker
     triggers:
     - type: ConfigChange
     - imageChange:
         from:
           kind: ImageStreamTag
-          name: origin:${OPENDHIFT_IMAGE_BUILD_VERSION}
+          name: origin:${OPENSHIFT_IMAGE_BUILD_VERSION}
       type: ImageChange
 - apiVersion: v1
   kind: BuildConfig
@@ -682,7 +714,7 @@ objects:
     output:
       to:
         kind: ImageStreamTag
-        name: origin-sti-builder:${OPENDHIFT_IMAGE_BUILD_VERSION}
+        name: origin-sti-builder:${OPENSHIFT_IMAGE_BUILD_VERSION}
     runPolicy: SerialLatestOnly
     source:
       dockerfile: |-
@@ -698,14 +730,14 @@ objects:
       dockerStrategy:
         from:
           kind: ImageStreamTag
-          name: origin:${OPENDHIFT_IMAGE_BUILD_VERSION}
+          name: origin:${OPENSHIFT_IMAGE_BUILD_VERSION}
       type: Docker
     triggers:
     - type: ConfigChange
     - imageChange:
         from:
           kind: ImageStreamTag
-          name: origin:${OPENDHIFT_IMAGE_BUILD_VERSION}
+          name: origin:${OPENSHIFT_IMAGE_BUILD_VERSION}
       type: ImageChange
 - apiVersion: v1
   kind: BuildConfig
@@ -717,7 +749,7 @@ objects:
     output:
       to:
         kind: ImageStreamTag
-        name: origin-haproxy-router:${OPENDHIFT_IMAGE_BUILD_VERSION}
+        name: origin-haproxy-router:${OPENSHIFT_IMAGE_BUILD_VERSION}
     runPolicy: SerialLatestOnly
     source:
       contextDir: router/haproxy
@@ -728,13 +760,13 @@ objects:
       dockerStrategy:
         from:
           kind: ImageStreamTag
-          name: origin:${OPENDHIFT_IMAGE_BUILD_VERSION}
+          name: origin:${OPENSHIFT_IMAGE_BUILD_VERSION}
       type: Docker
     triggers:
     - imageChange:
         from:
           kind: ImageStreamTag
-          name: origin:${OPENDHIFT_IMAGE_BUILD_VERSION}
+          name: origin:${OPENSHIFT_IMAGE_BUILD_VERSION}
       type: ImageChange
     - type: ConfigChange
 - apiVersion: v1
@@ -747,7 +779,7 @@ objects:
     output:
       to:
         kind: ImageStreamTag
-        name: origin-nginx-router:${OPENDHIFT_IMAGE_BUILD_VERSION}
+        name: origin-nginx-router:${OPENSHIFT_IMAGE_BUILD_VERSION}
     runPolicy: SerialLatestOnly
     source:
       contextDir: router/nginx
@@ -758,13 +790,13 @@ objects:
       dockerStrategy:
         from:
           kind: ImageStreamTag
-          name: origin:${OPENDHIFT_IMAGE_BUILD_VERSION}
+          name: origin:${OPENSHIFT_IMAGE_BUILD_VERSION}
       type: Docker
     triggers:
     - imageChange:
         from:
           kind: ImageStreamTag
-          name: origin:${OPENDHIFT_IMAGE_BUILD_VERSION}
+          name: origin:${OPENSHIFT_IMAGE_BUILD_VERSION}
       type: ImageChange
     - type: ConfigChange
 - apiVersion: v1
@@ -777,7 +809,7 @@ objects:
     output:
       to:
         kind: ImageStreamTag
-        name: pre-registry:${OPENDHIFT_IMAGE_BUILD_VERSION}
+        name: pre-registry:${OPENSHIFT_IMAGE_BUILD_VERSION}
     runPolicy: SerialLatestOnly
     source:
       dockerfile: |-
@@ -786,7 +818,7 @@ objects:
       images:
       - from:
           kind: ImageStreamTag
-          name: source-origin-docker-registry:${OPENDHIFT_IMAGE_BUILD_VERSION}
+          name: source-origin-docker-registry:${OPENSHIFT_IMAGE_BUILD_VERSION}
         paths:
         - destinationDir: tmp
           sourcePath: /usr/bin/dockerregistry
@@ -795,14 +827,14 @@ objects:
       dockerStrategy:
         from:
           kind: ImageStreamTag
-          name: base:${OPENDHIFT_IMAGE_BUILD_VERSION}
+          name: base:${OPENSHIFT_IMAGE_BUILD_VERSION}
       type: Docker
     triggers:
     - type: ConfigChange
     - imageChange:
         from:
           kind: ImageStreamTag
-          name: base:${OPENDHIFT_IMAGE_BUILD_VERSION}
+          name: base:${OPENSHIFT_IMAGE_BUILD_VERSION}
       type: ImageChange
 - apiVersion: v1
   kind: BuildConfig
@@ -814,7 +846,7 @@ objects:
     output:
       to:
         kind: ImageStreamTag
-        name: origin-docker-registry:${OPENDHIFT_IMAGE_BUILD_VERSION}
+        name: origin-docker-registry:${OPENSHIFT_IMAGE_BUILD_VERSION}
     runPolicy: SerialLatestOnly
     source:
       contextDir: registry
@@ -825,12 +857,12 @@ objects:
       dockerStrategy:
         from:
           kind: ImageStreamTag
-          name: pre-registry:${OPENDHIFT_IMAGE_BUILD_VERSION}
+          name: pre-registry:${OPENSHIFT_IMAGE_BUILD_VERSION}
       type: Docker
     triggers:
     - imageChange:
         from:
           kind: ImageStreamTag
-          name: pre-registry:${OPENDHIFT_IMAGE_BUILD_VERSION}
+          name: pre-registry:${OPENSHIFT_IMAGE_BUILD_VERSION}
       type: ImageChange
     - type: ConfigChange

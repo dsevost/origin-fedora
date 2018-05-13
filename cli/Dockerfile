@@ -13,6 +13,7 @@ RUN \
     INSTALL_PKGS="\
 	btrfs-progs \
 	e2fsprogs \
+	git \
 	openssl \
 	xfsprogs \
 	xz \
