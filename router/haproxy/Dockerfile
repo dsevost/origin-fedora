@@ -12,7 +12,11 @@ WORKDIR /var/lib/haproxy/conf
 ENV TEMPLATE_FILE=/var/lib/haproxy/conf/haproxy-config.template \
     RELOAD_SCRIPT=/var/lib/haproxy/reload-haproxy
 
-RUN INSTALL_PKGS="haproxy" && \
+RUN \
+    INSTALL_PKGS="\
+    haproxy \
+    procps-ng \
+    " && \
     dnf install -y $INSTALL_PKGS && \
     dnf clean all && \
     mkdir -p /var/lib/haproxy/router/{certs,cacerts} && \
