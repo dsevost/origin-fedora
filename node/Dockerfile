@@ -40,9 +40,11 @@ RUN \
     INSTALL_PKGS="\
 	binutils \
 	bridge-utils \
+	btrfs-progs \
 	conntrack-tools \
 	dbus \
 	device-mapper-libs \
+	e2fsprogs \
 	ethtool \
 	iproute \
 	iptables \
@@ -55,9 +57,10 @@ RUN \
 	openssl \
 	openvswitch \
 	procps-ng \
+	xfsprogs \
 	xz \
 	" && \
-    dnf install -y $INSTALL_PKGS && \
+    dnf install --setopt=tsflags=nodocs -y $INSTALL_PKGS && \
     mkdir -p \
 	/usr/lib/systemd/system/{docker,origin-node}.service.d
 

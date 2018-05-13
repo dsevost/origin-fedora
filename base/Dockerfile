@@ -24,7 +24,7 @@ RUN \
 	util-linux \
 	which \
       " ; \
-    dnf install -y ${INSTALL_PKGS} && \
+    dnf install --setopt=tsflags=nodocs -y ${INSTALL_PKGS} && \
     dnf clean all && \
     mkdir -p /var/lib/origin
 

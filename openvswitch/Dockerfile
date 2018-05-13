@@ -8,7 +8,7 @@ FROM node
 COPY scripts/* /usr/local/bin/
 
 RUN INSTALL_PKGS="openvswitch" && \
-    dnf install -y ${INSTALL_PKGS} && \
+    dnf install --setopt=tsflags=nodocs -y ${INSTALL_PKGS} && \
     dnf clean all
 
 LABEL io.openshift.tags="openshift,openvswitch" \
