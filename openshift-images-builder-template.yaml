@@ -201,6 +201,15 @@ objects:
     tags:
     - name: ${OPENDHIFT_IMAGE_BUILD_VERSION}
 - apiVersion: v1
+  kind: ImageStream
+  metadata:
+    name: origin-nginx-router
+    labels:
+      template: openshift-images-builder
+  spec:
+    tags:
+    - name: ${OPENDHIFT_IMAGE_BUILD_VERSION}
+- apiVersion: v1
   kind: BuildConfig
   metadata:
     name: source
@@ -712,6 +721,36 @@ objects:
     runPolicy: SerialLatestOnly
     source:
       contextDir: router/haproxy
+      git:
+        uri: https://github.com/dsevost/origin-fedora
+      type: Git
+    strategy:
+      dockerStrategy:
+        from:
+          kind: ImageStreamTag
+          name: origin:${OPENDHIFT_IMAGE_BUILD_VERSION}
+      type: Docker
+    triggers:
+    - imageChange:
+        from:
+          kind: ImageStreamTag
+          name: origin:${OPENDHIFT_IMAGE_BUILD_VERSION}
+      type: ImageChange
+    - type: ConfigChange
+- apiVersion: v1
+  kind: BuildConfig
+  metadata:
+    labels:
+      template: openshift-images-builder
+    name: origin-nginx-router
+  spec:
+    output:
+      to:
+        kind: ImageStreamTag
+        name: origin-nginx-router:${OPENDHIFT_IMAGE_BUILD_VERSION}
+    runPolicy: SerialLatestOnly
+    source:
+      contextDir: router/nginx
       git:
         uri: https://github.com/dsevost/origin-fedora
       type: Git
