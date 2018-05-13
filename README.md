@@ -1,6 +1,15 @@
 # OpenShift images based on Fedora
 
+## Base images and sripts
+
+### OpenShift Origin (v3.9)
+https://github.com/openshift/origin/tree/release-3.9/images
+
+### Etcd
+https://github.com/projectatomic/atomic-system-containers/tree/master/etcd
+
 ## Build from scratch
+
 ```
 $ export OPENSHIFT_VERSION=v3.9
 $ export FEDORA_RELEASE=27
@@ -36,19 +45,15 @@ $ oc import-image origin-node --from=docker.io/openshift/node:${OPENSHIFT_VERSIO
 
 $ oc create -f node/node-pre-bc.yaml
 
-#$ oc new-build \
-#    --name pre-node \
-#    -D $'FROM origin\nCOPY tmp/etc /etc/\nCOPY tmp/opt /opt/\nCOPY tmp/usr /usr/' \
-#    --source-image=origin-node \
-#    --source-image-path=/etc/cni/net.d:tmp1 \
-#    --source-image-path=/opt/cni:tmp2 \
-#    --source-image-path=/usr/lib/systemd/system/origin-node.service.d:tmp3
-
 $ oc new-build \
     https://github.com/dsevost/origin-fedora \
     --context-dir=node \
     --build-arg=ZFS_REPO_FEDORA_REL=${FEDORA_RELEASE} \
     --name node
 
+$ oc new-build \
+    https://github.com/dsevost/origin-fedora \
+    --context-dir=openvswitch \
+    --name openvswitch
 
 ```
