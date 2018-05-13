@@ -28,12 +28,12 @@ $ oc new-build \
     --context-dir=base \
     --name base
 
-$ oc import-image origin-origin --from=docker.io/openshift/origin:${OPENSHIFT_VERSION} --confirm --scheduled
+$ oc import-image source-origin --from=docker.io/openshift/origin:${OPENSHIFT_VERSION} --confirm --scheduled
 
 $ oc new-build \
     --name pre-cli \
     -D $'FROM base\nCOPY tmp/oc /usr/bin/' \
-    --source-image=origin-origin \
+    --source-image=source-origin \
     --source-image-path=/usr/bin/oc:tmp
 
 $ oc new-build \
@@ -45,7 +45,7 @@ $ oc new-build \
 $ oc new-build \
     --name pre \
     -D $'FROM cli\nCOPY tmp/openshift /usr/bin/' \
-    --source-image=origin-origin \
+    --source-image=source-origin \
     --source-image-path=/usr/bin/openshift:tmp
 
 $ oc new-build \
@@ -53,7 +53,7 @@ $ oc new-build \
     --context-dir=origin \
     --name origin
 
-$ oc import-image node-origin --from=docker.io/openshift/node:${OPENSHIFT_VERSION} --confirm --scheduled
+$ oc import-image source-node --from=docker.io/openshift/node:${OPENSHIFT_VERSION} --confirm --scheduled
 
 $ oc create -f node/node-pre-bc.yaml
 

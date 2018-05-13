@@ -26,7 +26,7 @@ objects:
 - apiVersion: v1
   kind: ImageStream
   metadata:
-    name: origin-origin
+    name: source-origin
     labels:
       template: openshift-images-builder
   spec:
@@ -40,7 +40,7 @@ objects:
 - apiVersion: v1
   kind: ImageStream
   metadata:
-    name: node-origin
+    name: source-node
     labels:
       template: openshift-images-builder
   spec:
@@ -54,14 +54,14 @@ objects:
 - apiVersion: v1
   kind: ImageStream
   metadata:
-    name: pod-origin
+    name: source-origin-pod
     labels:
       template: openshift-images-builder
   spec:
     tags:
     - from:
         kind: DockerImage
-        name: docker.io/openshift/pod-origin:${OPENDHIFT_IMAGE_BUILD_VERSION}
+        name: docker.io/openshift/origin-pod:${OPENDHIFT_IMAGE_BUILD_VERSION}
       importPolicy:
         scheduled: true
       name: ${OPENDHIFT_IMAGE_BUILD_VERSION}
@@ -261,7 +261,7 @@ objects:
       images:
       - from:
           kind: ImageStreamTag
-          name: origin-origin:${OPENDHIFT_IMAGE_BUILD_VERSION}
+          name: source-origin:${OPENDHIFT_IMAGE_BUILD_VERSION}
         paths:
         - destinationDir: tmp
           sourcePath: /usr/bin/oc
@@ -276,7 +276,7 @@ objects:
     - imageChange:
         from:
           kind: ImageStreamTag
-          name: origin-origin:${OPENDHIFT_IMAGE_BUILD_VERSION}
+          name: source-origin:${OPENDHIFT_IMAGE_BUILD_VERSION}
       type: ImageChange
     - imageChange:
         from:
@@ -336,7 +336,7 @@ objects:
       images:
       - from:
           kind: ImageStreamTag
-          name: origin-origin:${OPENDHIFT_IMAGE_BUILD_VERSION}
+          name: source-origin:${OPENDHIFT_IMAGE_BUILD_VERSION}
         paths:
         - destinationDir: tmp
           sourcePath: /usr/bin/openshift
@@ -352,7 +352,7 @@ objects:
     - imageChange:
         from:
           kind: ImageStreamTag
-          name: origin-origin:${OPENDHIFT_IMAGE_BUILD_VERSION}
+          name: source-origin:${OPENDHIFT_IMAGE_BUILD_VERSION}
       type: ImageChange
     - imageChange:
         from:
@@ -410,14 +410,14 @@ objects:
       images:
       - from:
           kind: ImageStreamTag
-          name: node-origin:${OPENDHIFT_IMAGE_BUILD_VERSION}
+          name: source-node:${OPENDHIFT_IMAGE_BUILD_VERSION}
         paths:
         - destinationDir: tmp1
           sourcePath: /etc/cni
         - destinationDir: tmp2
           sourcePath: /opt/cni
         - destinationDir: tmp3
-          sourcePath: /usr/lib/systemd/system/node-origin.service.d
+          sourcePath: /usr/lib/systemd/system/origin-node.service.d
       type: Dockerfile
     strategy:
       dockerStrategy:
@@ -430,7 +430,7 @@ objects:
     - imageChange:
         from:
           kind: ImageStreamTag
-          name: node-origin:${OPENDHIFT_IMAGE_BUILD_VERSION}
+          name: source-node:${OPENDHIFT_IMAGE_BUILD_VERSION}
       type: ImageChange
     - imageChange:
         from:
@@ -522,7 +522,7 @@ objects:
       images:
       - from:
           kind: ImageStreamTag
-          name: pod-origin:${OPENDHIFT_IMAGE_BUILD_VERSION}
+          name: source-origin-pod:${OPENDHIFT_IMAGE_BUILD_VERSION}
         paths:
         - destinationDir: tmp
           sourcePath: /usr/bin/pod
@@ -537,7 +537,7 @@ objects:
     - imageChange:
         from:
           kind: ImageStreamTag
-          name: pod-origin:${OPENDHIFT_IMAGE_BUILD_VERSION}
+          name: source-origin-pod:${OPENDHIFT_IMAGE_BUILD_VERSION}
       type: ImageChange
     - imageChange:
         from:

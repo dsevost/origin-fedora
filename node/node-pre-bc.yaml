@@ -17,7 +17,7 @@ spec:
     images:
     - from:
         kind: ImageStreamTag
-        name: origin-node:latest
+        name: source-node:latest
       paths:
       - destinationDir: tmp1
         sourcePath: /etc/cni
@@ -36,7 +36,7 @@ spec:
   - imageChange:
       from:
         kind: ImageStreamTag
-        name: node-origin:latest
+        name: source-node:latest
     type: ImageChange
   - imageChange:
       from:
