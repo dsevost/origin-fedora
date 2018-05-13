@@ -191,14 +191,17 @@ objects:
     source:
       dockerfile: |-
         FROM base:${OPENDHIFT_IMAGE_BUILD_VERSION}
-        COPY tmp/openshift /usr/bin/
+        COPY tmp1/openshift /usr/bin/
+        COPY tmp2/oc /usr/bin/oc
       images:
       - from:
           kind: ImageStreamTag
           name: origin-origin:${OPENDHIFT_IMAGE_BUILD_VERSION}
         paths:
-        - destinationDir: tmp
+        - destinationDir: tmp1
           sourcePath: /usr/bin/openshift
+        - destinationDir: tmp2
+          sourcePath: /usr/bin/oc
       type: Dockerfile
     strategy:
       dockerStrategy:
