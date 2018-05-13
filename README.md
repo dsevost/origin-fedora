@@ -39,7 +39,8 @@ $ oc new-build \
 $ oc new-build \
     https://github.com/dsevost/origin-fedora \
     --context-dir=cli \
-    --name cli
+    --name cli \
+    --build-arg=ZFS_REPO_FEDORA_REL=${FEDORA_RELEASE}
 
 $ oc new-build \
     --name pre \
@@ -59,7 +60,6 @@ $ oc create -f node/node-pre-bc.yaml
 $ oc new-build \
     https://github.com/dsevost/origin-fedora \
     --context-dir=node \
-    --build-arg=ZFS_REPO_FEDORA_REL=${FEDORA_RELEASE} \
     --name node
 
 $ oc new-build \
