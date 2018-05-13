@@ -19,10 +19,8 @@ objects:
         kind: DockerImage
         name: docker.io/library/fedora:${BASE_IMAGE_VERSION}
       name: ${BASE_IMAGE_VERSION}
-#    - from:
-#        kind: ImageStreamTag
-#        name: fedora:${BASE_IMAGE_VERSION}
-#      name: latest
+      importPolicy:
+        scheduled: true
 - apiVersion: v1
   kind: ImageStream
   metadata:
@@ -33,6 +31,8 @@ objects:
         kind: DockerImage
         name: docker.io/openshift/origin:${OPENDHIFT_IMAGE_BUILD_VERSION}
       name: ${OPENDHIFT_IMAGE_BUILD_VERSION}
+      importPolicy:
+        scheduled: true
 - apiVersion: v1
   kind: ImageStream
   metadata:
@@ -43,6 +43,8 @@ objects:
         kind: DockerImage
         name: docker.io/openshift/node:${OPENDHIFT_IMAGE_BUILD_VERSION}
       name: ${OPENDHIFT_IMAGE_BUILD_VERSION}
+      importPolicy:
+        scheduled: true
 - apiVersion: v1
   kind: ImageStream
   metadata:
