@@ -17,6 +17,7 @@ RUN \
 	bind-utils \
 	findutils \
 	hostname \
+	iptables \
 	lsof \
 	socat \
 	tar \
