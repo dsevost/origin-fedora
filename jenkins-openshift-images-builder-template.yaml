@@ -1,0 +1,724 @@
+apiVersion: v1
+kind: Template
+metadata:
+  name: jenkins-openshift-images-builder
+parameters:
+- name: BASE_IMAGE_VERSION
+  description: Fedora base Image version, default is 27
+  value: "27"
+- name: OPENSHIFT_IMAGE_BUILD_VERSION
+  value: v3.9
+- name: BUILD_PREFIX
+  value: "fc"
+objects:
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    labels:
+      template: jenkins-openshift-images-builder
+    name: fedora
+  spec:
+    tags:
+    - from:
+        kind: DockerImage
+        name: docker.io/library/fedora:${BASE_IMAGE_VERSION}
+      name: ${BASE_IMAGE_VERSION}
+      importPolicy:
+        scheduled: true
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    labels:
+      template: jenkins-openshift-images-builder
+    name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-source-origin
+  spec:
+    tags:
+    - from:
+        kind: DockerImage
+        name: docker.io/openshift/origin:${OPENSHIFT_IMAGE_BUILD_VERSION}
+      name: ${OPENSHIFT_IMAGE_BUILD_VERSION}
+      importPolicy:
+        scheduled: true
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    labels:
+      template: jenkins-openshift-images-builder
+    name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-source-node
+  spec:
+    tags:
+    - from:
+        kind: DockerImage
+        name: docker.io/openshift/node:${OPENSHIFT_IMAGE_BUILD_VERSION}
+      name: ${OPENSHIFT_IMAGE_BUILD_VERSION}
+      importPolicy:
+        scheduled: true
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    labels:
+      template: jenkins-openshift-images-builder
+    name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-source-origin-pod
+  spec:
+    tags:
+    - from:
+        kind: DockerImage
+        name: docker.io/openshift/origin-pod:${OPENSHIFT_IMAGE_BUILD_VERSION}
+      importPolicy:
+        scheduled: true
+      name: ${OPENSHIFT_IMAGE_BUILD_VERSION}
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    labels:
+      template: jenkins-openshift-images-builder
+    name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-source-origin-docker-registry
+  spec:
+    tags:
+    - from:
+        kind: DockerImage
+        name: docker.io/openshift/origin-docker-registry:${OPENSHIFT_IMAGE_BUILD_VERSION}
+      importPolicy:
+        scheduled: true
+      name: ${OPENSHIFT_IMAGE_BUILD_VERSION}
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    labels:
+      template: jenkins-openshift-images-builder
+    name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-source
+  spec:
+    tags:
+    - name: ${OPENSHIFT_IMAGE_BUILD_VERSION}
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    labels:
+      template: jenkins-openshift-images-builder
+    name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-etcd
+  spec:
+    tags:
+    - name: ${OPENSHIFT_IMAGE_BUILD_VERSION}
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    labels:
+      template: jenkins-openshift-images-builder
+    name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-base
+  spec:
+    tags:
+    - name: ${OPENSHIFT_IMAGE_BUILD_VERSION}
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    labels:
+      template: jenkins-openshift-images-builder
+    name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-pre-cli
+  spec:
+    tags:
+    - name: ${OPENSHIFT_IMAGE_BUILD_VERSION}
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    labels:
+      template: jenkins-openshift-images-builder
+    name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-cli
+  spec:
+    tags:
+    - name: ${OPENSHIFT_IMAGE_BUILD_VERSION}
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    labels:
+      template: jenkins-openshift-images-builder
+    name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-pre
+  spec:
+    tags:
+    - name: ${OPENSHIFT_IMAGE_BUILD_VERSION}
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    labels:
+      template: jenkins-openshift-images-builder
+    name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-origin
+  spec:
+    tags:
+    - name: ${OPENSHIFT_IMAGE_BUILD_VERSION}
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    labels:
+      template: jenkins-openshift-images-builder
+    name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-pre-node
+  spec:
+    tags:
+    - name: ${OPENSHIFT_IMAGE_BUILD_VERSION}
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    labels:
+      template: jenkins-openshift-images-builder
+    name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-node
+  spec:
+    tags:
+    - name: ${OPENSHIFT_IMAGE_BUILD_VERSION}
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    labels:
+      template: jenkins-openshift-images-builder
+    name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-origin-pod
+  spec:
+    tags:
+    - name: ${OPENSHIFT_IMAGE_BUILD_VERSION}
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    labels:
+      template: jenkins-openshift-images-builder
+    name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-openvswitch
+  spec:
+    tags:
+    - name: ${OPENSHIFT_IMAGE_BUILD_VERSION}
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    labels:
+      template: jenkins-openshift-images-builder
+    name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-origin-deployer
+  spec:
+    tags:
+    - name: ${OPENSHIFT_IMAGE_BUILD_VERSION}
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    labels:
+      template: jenkins-openshift-images-builder
+    name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-origin-docker-builder
+  spec:
+    tags:
+    - name: ${OPENSHIFT_IMAGE_BUILD_VERSION}
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    labels:
+      template: jenkins-openshift-images-builder
+    name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-origin-sti-builder
+  spec:
+    tags:
+    - name: ${OPENSHIFT_IMAGE_BUILD_VERSION}
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    labels:
+      template: jenkins-openshift-images-builder
+    name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-origin-haproxy-router
+  spec:
+    tags:
+    - name: ${OPENSHIFT_IMAGE_BUILD_VERSION}
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    labels:
+      template: jenkins-openshift-images-builder
+    name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-origin-nginx-router
+  spec:
+    tags:
+    - name: ${OPENSHIFT_IMAGE_BUILD_VERSION}
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    labels:
+      template: jenkins-openshift-images-builder
+    name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-pre-registry
+  spec:
+    tags:
+    - name: ${OPENSHIFT_IMAGE_BUILD_VERSION}
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    labels:
+      template: jenkins-openshift-images-builder
+    name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-origin-docker-registry
+  spec:
+    tags:
+    - name: ${OPENSHIFT_IMAGE_BUILD_VERSION}
+- apiVersion: v1
+  kind: BuildConfig
+  metadata:
+    labels:
+      template: jenkins-openshift-images-builder
+    name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-source
+  spec:
+    runPolicy: SerialLatestOnly
+    output:
+      to:
+        kind: ImageStreamTag
+        name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-source:${OPENSHIFT_IMAGE_BUILD_VERSION}
+    source:
+      contextDir: source
+      git:
+        uri: https://github.com/dsevost/origin-fedora
+      type: Git
+    strategy:
+      dockerStrategy:
+        from:
+          kind: ImageStreamTag
+          name: fedora:${BASE_IMAGE_VERSION}
+      type: Docker
+- apiVersion: v1
+  kind: BuildConfig
+  metadata:
+    labels:
+      template: jenkins-openshift-images-builder
+    name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-etcd
+  spec:
+    runPolicy: SerialLatestOnly
+    output:
+      to:
+        kind: ImageStreamTag
+        name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-etcd:${OPENSHIFT_IMAGE_BUILD_VERSION}
+    source:
+      contextDir: etcd
+      git:
+        uri: https://github.com/dsevost/origin-fedora
+      type: Git
+    strategy:
+      dockerStrategy:
+        from:
+          kind: ImageStreamTag
+          name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-source:${OPENSHIFT_IMAGE_BUILD_VERSION}
+      type: Docker
+- apiVersion: v1
+  kind: BuildConfig
+  metadata:
+    labels:
+      template: jenkins-openshift-images-builder
+    name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-base
+  spec:
+    runPolicy: SerialLatestOnly
+    output:
+      to:
+        kind: ImageStreamTag
+        name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-base:${OPENSHIFT_IMAGE_BUILD_VERSION}
+    source:
+      contextDir: base
+      git:
+        uri: https://github.com/dsevost/origin-fedora
+      type: Git
+    strategy:
+      dockerStrategy:
+        from:
+          kind: ImageStreamTag
+          name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-source:${OPENSHIFT_IMAGE_BUILD_VERSION}
+      type: Docker
+- apiVersion: v1
+  kind: BuildConfig
+  metadata:
+    labels:
+      template: jenkins-openshift-images-builder
+    name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-pre-cli
+  spec:
+    runPolicy: SerialLatestOnly
+    output:
+      to:
+        kind: ImageStreamTag
+        name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-pre-cli:${OPENSHIFT_IMAGE_BUILD_VERSION}
+    source:
+      dockerfile: |-
+        FROM base
+        COPY tmp/oc /usr/bin/
+      images:
+      - from:
+          kind: ImageStreamTag
+          name: source-origin:${OPENSHIFT_IMAGE_BUILD_VERSION}
+        paths:
+        - destinationDir: tmp
+          sourcePath: /usr/bin/oc
+      type: Dockerfile
+    strategy:
+      dockerStrategy:
+        from:
+          kind: ImageStreamTag
+          name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-base:${OPENSHIFT_IMAGE_BUILD_VERSION}
+      type: Docker
+- apiVersion: v1
+  kind: BuildConfig
+  metadata:
+    labels:
+      template: jenkins-openshift-images-builder
+    name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-cli
+  spec:
+    output:
+      to:
+        kind: ImageStreamTag
+        name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-cli:${OPENSHIFT_IMAGE_BUILD_VERSION}
+    runPolicy: SerialLatestOnly
+    source:
+      contextDir: cli
+      git:
+        uri: https://github.com/dsevost/origin-fedora
+      type: Git
+    strategy:
+      dockerStrategy:
+        buildArgs:
+        - name: ZFS_REPO_FEDORA_REL
+          value: ${BASE_IMAGE_VERSION}
+        from:
+          kind: ImageStreamTag
+          name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-pre-cli:${OPENSHIFT_IMAGE_BUILD_VERSION}
+      type: Docker
+- apiVersion: v1
+  kind: BuildConfig
+  metadata:
+    labels:
+      template: jenkins-openshift-images-builder
+    name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-pre
+  spec:
+    runPolicy: SerialLatestOnly
+    output:
+      to:
+        kind: ImageStreamTag
+        name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-pre:${OPENSHIFT_IMAGE_BUILD_VERSION}
+    source:
+      dockerfile: |-
+        FROM cli
+        COPY tmp/openshift /usr/bin/
+      images:
+      - from:
+          kind: ImageStreamTag
+          name: source-origin:${OPENSHIFT_IMAGE_BUILD_VERSION}
+        paths:
+        - destinationDir: tmp
+          sourcePath: /usr/bin/openshift
+      type: Dockerfile
+    strategy:
+      dockerStrategy:
+        from:
+          kind: ImageStreamTag
+          name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-cli:${OPENSHIFT_IMAGE_BUILD_VERSION}
+      type: Docker
+- apiVersion: v1
+  kind: BuildConfig
+  metadata:
+    labels:
+      template: jenkins-openshift-images-builder
+    name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-origin
+  spec:
+    runPolicy: SerialLatestOnly
+    output:
+      to:
+        kind: ImageStreamTag
+        name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-origin:${OPENSHIFT_IMAGE_BUILD_VERSION}
+    source:
+      contextDir: origin
+      git:
+        uri: https://github.com/dsevost/origin-fedora
+      type: Git
+    strategy:
+      dockerStrategy:
+        from:
+          kind: ImageStreamTag
+          name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-pre:${OPENSHIFT_IMAGE_BUILD_VERSION}
+      type: Docker
+- apiVersion: v1
+  kind: BuildConfig
+  metadata:
+    labels:
+      template: jenkins-openshift-images-builder
+    name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-node-pre
+  spec:
+    runPolicy: SerialLatestOnly
+    output:
+      to:
+        kind: ImageStreamTag
+        name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-pre-node:${OPENSHIFT_IMAGE_BUILD_VERSION}
+    source:
+      dockerfile: |-
+        FROM origin
+        COPY tmp1 /etc/
+        COPY tmp2 /opt/
+        COPY tmp3 /usr/
+      images:
+      - from:
+          kind: ImageStreamTag
+          name: source-node:${OPENSHIFT_IMAGE_BUILD_VERSION}
+        paths:
+        - destinationDir: tmp1
+          sourcePath: /etc/cni
+        - destinationDir: tmp2
+          sourcePath: /opt/cni
+        - destinationDir: tmp3
+          sourcePath: /usr/lib/systemd/system/origin-node.service.d
+      type: Dockerfile
+    strategy:
+      dockerStrategy:
+        from:
+          kind: ImageStreamTag
+          name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-origin:${OPENSHIFT_IMAGE_BUILD_VERSION}
+      type: Docker
+- apiVersion: v1
+  kind: BuildConfig
+  metadata:
+    labels:
+      template: jenkins-openshift-images-builder
+    name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-node
+  spec:
+    runPolicy: SerialLatestOnly
+    output:
+      to:
+        kind: ImageStreamTag
+        name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-node:${OPENSHIFT_IMAGE_BUILD_VERSION}
+    source:
+      contextDir: node
+      git:
+        uri: https://github.com/dsevost/origin-fedora
+      type: Git
+    strategy:
+      dockerStrategy:
+        from:
+          kind: ImageStreamTag
+          name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-pre-node:${OPENSHIFT_IMAGE_BUILD_VERSION}
+      type: Docker
+- apiVersion: v1
+  kind: BuildConfig
+  metadata:
+    labels:
+      template: jenkins-openshift-images-builder
+    name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-openvswitch
+  spec:
+    output:
+      to:
+        kind: ImageStreamTag
+        name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-openvswitch:${OPENSHIFT_IMAGE_BUILD_VERSION}
+    runPolicy: SerialLatestOnly
+    source:
+      contextDir: openvswitch
+      git:
+        uri: https://github.com/dsevost/origin-fedora
+      type: Git
+    strategy:
+      dockerStrategy:
+        from:
+          kind: ImageStreamTag
+          name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-node:${OPENSHIFT_IMAGE_BUILD_VERSION}
+      type: Docker
+- apiVersion: v1
+  kind: BuildConfig
+  metadata:
+    labels:
+      template: jenkins-openshift-images-builder
+    name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-origin-pod
+  spec:
+    output:
+      to:
+        kind: ImageStreamTag
+        name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-origin-pod:${OPENSHIFT_IMAGE_BUILD_VERSION}
+    runPolicy: SerialLatestOnly
+    source:
+      dockerfile: |-
+        FROM source
+        COPY tmp/pod /usr/bin/
+        LABEL \
+          io.k8s.display-name="OpenShift Origin Pod Infrastructure" \
+          io.k8s.description="This is a component of OpenShift Origin and holds on to the shared Linux namespaces within a Pod." \
+          io.openshift.tags="openshift,pod"
+        USER 1001
+        ENTRYPOINT [ "/usr/bin/pod" ]
+      images:
+      - from:
+          kind: ImageStreamTag
+          name: source-origin-pod:${OPENSHIFT_IMAGE_BUILD_VERSION}
+        paths:
+        - destinationDir: tmp
+          sourcePath: /usr/bin/pod
+      type: Dockerfile
+    strategy:
+      dockerStrategy:
+        from:
+          kind: ImageStreamTag
+          name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-source:${OPENSHIFT_IMAGE_BUILD_VERSION}
+      type: Docker
+- apiVersion: v1
+  kind: BuildConfig
+  metadata:
+    labels:
+      template: jenkins-openshift-images-builder
+    name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-origin-deployer
+  spec:
+    runPolicy: SerialLatestOnly
+    output:
+      to:
+        kind: ImageStreamTag
+        name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-origin-deployer:${OPENSHIFT_IMAGE_BUILD_VERSION}
+    source:
+      dockerfile: |-
+        FROM origin
+        LABEL \
+          io.k8s.display-name="OpenShift Origin Deployer" \
+          io.k8s.description="This is a component of OpenShift Origin and executes the user deployment process to roll out new containers. It may be used as a base image for building your own custom deployer image." \
+          io.openshift.tags="openshift,deployer"
+        USER 1001
+        ENTRYPOINT [ "/usr/bin/openshift-deploy" ]
+      type: Dockerfile
+    strategy:
+      dockerStrategy:
+        from:
+          kind: ImageStreamTag
+          name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-origin:${OPENSHIFT_IMAGE_BUILD_VERSION}
+      type: Docker
+- apiVersion: v1
+  kind: BuildConfig
+  metadata:
+    labels:
+      template: jenkins-openshift-images-builder
+    name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-origin-docker-builder
+  spec:
+    output:
+      to:
+        kind: ImageStreamTag
+        name: origin-docker-builder:${OPENSHIFT_IMAGE_BUILD_VERSION}
+    runPolicy: SerialLatestOnly
+    source:
+      dockerfile: |-
+        FROM origin
+        LABEL \
+            io.k8s.display-name="OpenShift Origin Docker Builder" \
+            io.k8s.description="This is a component of OpenShift Origin and is responsible for executing Docker image builds." \
+            io.openshift.tags="openshift,builder"
+        USER 1001
+        ENTRYPOINT ["/usr/bin/openshift-docker-builder"]
+      type: Dockerfile
+    strategy:
+      dockerStrategy:
+        from:
+          kind: ImageStreamTag
+          name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-origin:${OPENSHIFT_IMAGE_BUILD_VERSION}
+      type: Docker
+- apiVersion: v1
+  kind: BuildConfig
+  metadata:
+    labels:
+      template: jenkins-openshift-images-builder
+    name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-origin-sti-builder
+  spec:
+    output:
+      to:
+        kind: ImageStreamTag
+        name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-origin-sti-builder:${OPENSHIFT_IMAGE_BUILD_VERSION}
+    runPolicy: SerialLatestOnly
+    source:
+      dockerfile: |-
+        FROM origin
+        LABEL \
+            io.k8s.display-name="OpenShift Origin S2I Builder" \
+            io.k8s.description="This is a component of OpenShift Origin and is responsible for executing source-to-image (s2i) image builds." \
+            io.openshift.tags="openshift,sti,s2i,builder"
+        USER 1001
+        ENTRYPOINT ["/usr/bin/openshift-s2i-builder"]
+      type: Dockerfile
+    strategy:
+      dockerStrategy:
+        from:
+          kind: ImageStreamTag
+          name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-origin:${OPENSHIFT_IMAGE_BUILD_VERSION}
+      type: Docker
+- apiVersion: v1
+  kind: BuildConfig
+  metadata:
+    labels:
+      template: jenkins-openshift-images-builder
+    name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-origin-haproxy-router
+  spec:
+    output:
+      to:
+        kind: ImageStreamTag
+        name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-origin-haproxy-router:${OPENSHIFT_IMAGE_BUILD_VERSION}
+    runPolicy: SerialLatestOnly
+    source:
+      contextDir: router/haproxy
+      git:
+        uri: https://github.com/dsevost/origin-fedora
+      type: Git
+    strategy:
+      dockerStrategy:
+        from:
+          kind: ImageStreamTag
+          name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-origin:${OPENSHIFT_IMAGE_BUILD_VERSION}
+      type: Docker
+- apiVersion: v1
+  kind: BuildConfig
+  metadata:
+    labels:
+      template: jenkins-openshift-images-builder
+    name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-origin-nginx-router
+  spec:
+    output:
+      to:
+        kind: ImageStreamTag
+        name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-origin-nginx-router:${OPENSHIFT_IMAGE_BUILD_VERSION}
+    runPolicy: SerialLatestOnly
+    source:
+      contextDir: router/nginx
+      git:
+        uri: https://github.com/dsevost/origin-fedora
+      type: Git
+    strategy:
+      dockerStrategy:
+        from:
+          kind: ImageStreamTag
+          name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-origin:${OPENSHIFT_IMAGE_BUILD_VERSION}
+      type: Docker
+- apiVersion: v1
+  kind: BuildConfig
+  metadata:
+    labels:
+      template: jenkins-openshift-images-builder
+    name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-pre-registry
+  spec:
+    output:
+      to:
+        kind: ImageStreamTag
+        name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-pre-registry:${OPENSHIFT_IMAGE_BUILD_VERSION}
+    runPolicy: SerialLatestOnly
+    source:
+      dockerfile: |-
+        FROM base
+        COPY tmp/dockerregistry /usr/bin/
+      images:
+      - from:
+          kind: ImageStreamTag
+          name: source-origin-docker-registry:${OPENSHIFT_IMAGE_BUILD_VERSION}
+        paths:
+        - destinationDir: tmp
+          sourcePath: /usr/bin/dockerregistry
+      type: Dockerfile
+    strategy:
+      dockerStrategy:
+        from:
+          kind: ImageStreamTag
+          name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-base:${OPENSHIFT_IMAGE_BUILD_VERSION}
+      type: Docker
+- apiVersion: v1
+  kind: BuildConfig
+  metadata:
+    labels:
+      template: jenkins-openshift-images-builder
+    name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-origin-docker-registry
+  spec:
+    output:
+      to:
+        kind: ImageStreamTag
+        name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-origin-docker-registry:${OPENSHIFT_IMAGE_BUILD_VERSION}
+    runPolicy: SerialLatestOnly
+    source:
+      contextDir: registry
+      git:
+        uri: https://github.com/dsevost/origin-fedora
+      type: Git
+    strategy:
+      dockerStrategy:
+        from:
+          kind: ImageStreamTag
+          name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-pre-registry:${OPENSHIFT_IMAGE_BUILD_VERSION}
+      type: Docker
