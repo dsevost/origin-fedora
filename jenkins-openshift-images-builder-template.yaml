@@ -7,7 +7,7 @@ parameters:
   description: Fedora base Image version, default is 27
   value: "27"
 - name: OPENSHIFT_IMAGE_BUILD_VERSION
-  value: v3.9
+  value: v3.9.0
 - name: BUILD_PREFIX
   value: "fc"
 objects:
@@ -722,3 +722,36 @@ objects:
           kind: ImageStreamTag
           name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-pre-registry:${OPENSHIFT_IMAGE_BUILD_VERSION}
       type: Docker
+- apiVersion: v1
+  kind: BuildConfig
+  metadata:
+    labels:
+      name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-origin-images-pipeline
+    name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-origin-images-pipeline
+  spec:
+    strategy:
+      jenkinsPipelineStrategy:
+        jenkinsfile: |-
+          def appName="${BUILD_PREFIX}-${BASE_IMAGE_VERSION}"
+          def project=""
+          def project_current=""
+
+          node {
+            project = env.PROJECT_NAME
+            echo "CI/CD project name is ${project_current}"
+
+            def simpleBuild = { suffix ->
+              stage("build-$suffix") {
+                openshiftBuild(namespace: "${project}", buildConfig: "${appName}-${suffix}", showBuildLogs: 'true')
+              }
+            }
+
+            [ "source", "base", "etcd", "pre-cli", "cli", "pre", "origin", "pre-node", "node", "openvswitch" ].each {
+              bc -> simpleBuild(bc) 
+            }
+            [ "origin-pod", "origin-deployer", "origin-docker-builder", "origin-sti-builder",
+              "origin-haproxy-router", "origin-nginx-router", "pre-registry", "origin-docker-registry" ].each {
+              bc -> simpleBuild(bc)
+            }
+          }
+      type: JenkinsPipeline
