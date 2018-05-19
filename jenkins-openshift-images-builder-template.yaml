@@ -30,7 +30,7 @@ objects:
   metadata:
     labels:
       template: jenkins-openshift-images-builder
-    name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-source-origin
+    name: source-origin
   spec:
     tags:
     - from:
@@ -44,7 +44,7 @@ objects:
   metadata:
     labels:
       template: jenkins-openshift-images-builder
-    name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-source-node
+    name: source-node
   spec:
     tags:
     - from:
@@ -58,7 +58,7 @@ objects:
   metadata:
     labels:
       template: jenkins-openshift-images-builder
-    name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-source-origin-pod
+    name: source-origin-pod
   spec:
     tags:
     - from:
@@ -72,7 +72,7 @@ objects:
   metadata:
     labels:
       template: jenkins-openshift-images-builder
-    name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-source-origin-docker-registry
+    name: source-origin-docker-registry
   spec:
     tags:
     - from:
@@ -426,7 +426,7 @@ objects:
   metadata:
     labels:
       template: jenkins-openshift-images-builder
-    name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-node-pre
+    name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-pre-node
   spec:
     runPolicy: SerialLatestOnly
     output:
@@ -577,7 +577,7 @@ objects:
     output:
       to:
         kind: ImageStreamTag
-        name: origin-docker-builder:${OPENSHIFT_IMAGE_BUILD_VERSION}
+        name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-origin-docker-builder:${OPENSHIFT_IMAGE_BUILD_VERSION}
     runPolicy: SerialLatestOnly
     source:
       dockerfile: |-
