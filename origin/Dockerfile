@@ -44,13 +44,13 @@ ENTRYPOINT ["/usr/bin/openshift"]
 #
 
 RUN \
-    cd /usr/bin && \
-    ln -s openshift openshift-deploy && \
-    ln -s openshift openshift-docker-build && \
-    ln -s openshift openshift-extract-image-content && \
-    ln -s openshift openshift-git-clone && \
-    ln -s openshift openshift-recycle && \
-    ln -s openshift openshift-router && \
-    ln -s openshift openshift-s2i-build && \
-    ln -s openshift-s2i-build openshift-sti-build && \
-    setcap 'cap_net_bind_service=ep' /usr/bin/openshift
+    set -xe ; \
+    setcap 'cap_net_bind_service=ep' /usr/bin/openshift ; \
+    cd /usr/bin ; \
+    LINKS="deploy docker-build extract-image-content \
+	f5-router git-clone manage-dockerfile \
+	recycle router s2i-build sti-build \
+     ; \
+    for l in $LINKS ; do \
+	ln -s openshift openshift-${l} ; \
+    done
