@@ -26,7 +26,7 @@ RUN \
     ZFS_VER=${ZFS_VERSION:-0.7.9-1.fc${FC_REL}} ; \
     rpms='' ; \
     suffix="${ZFS_VER}.x86_64.rpm" ; \
-    for p in zfs libnvpair1 libuutil1 libzfs2 libzpool2 ; do rpms+="http://download.zfsonlinux.org/fedora/27/x86_64/$p-$suffix " ; done ; \
+    for p in zfs libnvpair1 libuutil1 libzfs2 libzpool2 ; do rpms+="http://download.zfsonlinux.org/fedora/${FC_REL}/x86_64/$p-$suffix " ; done ; \
     rpm -ihv --nodeps $rpms
 
 
