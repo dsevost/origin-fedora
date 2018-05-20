@@ -688,7 +688,6 @@ objects:
             io.k8s.display-name="OpenShift Origin Docker Builder" \
             io.k8s.description="This is a component of OpenShift Origin and is responsible for executing Docker image builds." \
             io.openshift.tags="openshift,builder"
-        USER 1001
         ENTRYPOINT ["/usr/bin/openshift-docker-builder"]
       type: Dockerfile
     strategy:
@@ -723,7 +722,6 @@ objects:
             io.k8s.display-name="OpenShift Origin S2I Builder" \
             io.k8s.description="This is a component of OpenShift Origin and is responsible for executing source-to-image (s2i) image builds." \
             io.openshift.tags="openshift,sti,s2i,builder"
-        USER 1001
         ENTRYPOINT ["/usr/bin/openshift-s2i-builder"]
       type: Dockerfile
     strategy:
