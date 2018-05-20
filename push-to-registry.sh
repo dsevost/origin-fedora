@@ -9,20 +9,19 @@ REGISTRY_PREFIX_LOCAL=${REGISTRY_PREFIX_LOCAL:-"docker-registry.default.svc:5000
 REGISTRY_PREFIX_REMOTE=${REGISTRY_PREFIX_REMOTE:-"quay.io/dsevosty"}
 
 IMAGES="\
-origin-pod
 etcd \
 cli \
 origin \
+node \
+openvswitch \
+origin-pod
 origin-deployer \
 origin-docker-builder \
 origin-sti-builder \
 origin-docker-registry \
 origin-haproxy-router \
 origin-nginx-router \
-node \
-openvswitch \
 "
-
 for i in $IMAGES ; do
     skopeo copy \
 	docker://$REGISTRY_PREFIX_LOCAL/${BUILD_PREFIX}$i:$VER \
