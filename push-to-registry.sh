@@ -19,8 +19,8 @@ origin-deployer \
 origin-docker-builder \
 origin-sti-builder \
 origin-docker-registry \
-origin-haproxy-router \
 origin-nginx-router \
+origin-haproxy-router \
 "
 for i in $IMAGES ; do
     skopeo copy \
