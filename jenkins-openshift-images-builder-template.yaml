@@ -212,6 +212,15 @@ objects:
   metadata:
     labels:
       template: jenkins-openshift-images-builder
+    name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-origin-recycler
+  spec:
+    tags:
+    - name: ${OPENSHIFT_IMAGE_BUILD_VERSION}
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    labels:
+      template: jenkins-openshift-images-builder
     name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-origin-haproxy-router
   spec:
     tags:
@@ -626,6 +635,33 @@ objects:
   metadata:
     labels:
       template: jenkins-openshift-images-builder
+    name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-origin-recycler
+  spec:
+    output:
+      to:
+        kind: ImageStreamTag
+        name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-origin-recycler:${OPENSHIFT_IMAGE_BUILD_VERSION}
+    runPolicy: SerialLatestOnly
+    source:
+      dockerfile: |-
+        FROM origin
+        LABEL \
+            io.k8s.display-name="OpenShift Origin Volume Recycler" \
+            io.k8s.description="This is a component of OpenShift Origin and is used to prepare persistent volumes for reuse after they are deleted." \
+            io.openshift.tags="openshift,recycler"
+        ENTRYPOINT ["/usr/bin/openshift-recycle"]
+      type: Dockerfile
+    strategy:
+      dockerStrategy:
+        from:
+          kind: ImageStreamTag
+          name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-origin:${OPENSHIFT_IMAGE_BUILD_VERSION}
+      type: Docker
+- apiVersion: v1
+  kind: BuildConfig
+  metadata:
+    labels:
+      template: jenkins-openshift-images-builder
     name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-origin-haproxy-router
   spec:
     output:
@@ -747,7 +783,7 @@ objects:
             [ "source", "base", "etcd", "pre-cli", "cli", "pre", "origin", "pre-node", "node", "openvswitch" ].each {
               bc -> simpleBuild(bc) 
             }
-            [ "origin-pod", "origin-deployer", "origin-docker-builder", "origin-sti-builder",
+            [ "origin-pod", "origin-deployer", "origin-docker-builder", "origin-sti-builder", "origin-recycler",
               "origin-haproxy-router", "origin-nginx-router", "pre-registry", "origin-docker-registry" ].each {
               bc -> simpleBuild(bc)
             }
