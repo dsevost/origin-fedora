@@ -50,7 +50,7 @@ RUN \
     LINKS="deploy docker-build extract-image-content \
 	f5-router git-clone manage-dockerfile \
 	recycle router s2i-build sti-build \
-     ; \
+     "; \
     for l in $LINKS ; do \
 	ln -s openshift openshift-${l} ; \
     done
