@@ -850,7 +850,8 @@ objects:
               }
             }
 
-            [ "origin-source", "origin-base", "etcd", "origin-pre-cli", "origin-cli", "pre-origin", "origin-control-plane", "origin-pre-node", "origin-node" ].each {
+            [ "origin-source", "origin-base", "etcd", "origin-pre-cli", "origin-cli", "pre-origin", "origin-control-plane",
+              "origin-hyperkube", "origin-hypershift", "origin-pre-node", "origin-node" ].each {
                bc -> simpleBuild(bc)
             }
 
