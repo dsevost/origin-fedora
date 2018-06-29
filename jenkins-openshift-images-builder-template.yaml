@@ -536,7 +536,7 @@ objects:
         FROM origin
         COPY tmp1 /etc/
         COPY tmp2 /opt/
-        COPY tmp3/openshift-node-config /usr/bin/
+        COPY tmp3/openshift-node-config tmp4/hyperkube /usr/bin/
       images:
       - from:
           kind: ImageStreamTag
@@ -548,6 +548,8 @@ objects:
           sourcePath: /opt/cni
         - destinationDir: tmp3
           sourcePath: /usr/bin/openshift-node-config
+        - destinationDir: tmp4
+          sourcePath: /usr/bin/hyperkube
       type: Dockerfile
     strategy:
       dockerStrategy:
