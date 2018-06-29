@@ -11,7 +11,6 @@
 
 FROM source
 
-#COPY *.repo /etc/yum.repos.d/
 RUN \
     INSTALL_PKGS=" \
 	bind-utils \

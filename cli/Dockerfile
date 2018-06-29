@@ -22,7 +22,7 @@ RUN \
     dnf clean all && \
     cd /usr/bin && ln -s oc kubectl && \
     set -x ; \
-    FC_REL=${ZFS_REPO_FEDORA_REL:-"27"} ; \
+    FC_REL=${ZFS_REPO_FEDORA_REL:-"28"} ; \
     ZFS_VER=${ZFS_VERSION:-0.7.9-1.fc${FC_REL}} ; \
     rpms='' ; \
     suffix="${ZFS_VER}.x86_64.rpm" ; \

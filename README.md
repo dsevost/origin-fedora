@@ -11,8 +11,8 @@ https://github.com/projectatomic/atomic-system-containers/tree/master/etcd
 ## Build from scratch
 
 ```
-$ export OPENSHIFT_VERSION=v3.9
-$ export FEDORA_RELEASE=27
+$ export OPENSHIFT_VERSION=v3.10
+$ export FEDORA_RELEASE=28
 
 $ oc new-project origin-images
 

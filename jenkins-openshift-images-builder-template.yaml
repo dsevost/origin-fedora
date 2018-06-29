@@ -5,11 +5,15 @@ metadata:
 parameters:
 - name: BASE_IMAGE_VERSION
   description: Fedora base Image version, default is 27
-  value: "27"
+  value: "28"
 - name: OPENSHIFT_IMAGE_BUILD_VERSION
-  value: v3.9.0
+  value: v3.10.0
 - name: BUILD_PREFIX
   value: "fc"
+- name: SOURCE_REPOSITORY_URL
+  value: https://github.com/dsevost/origin-fedora
+- name: SOURCE_REPOSITORY_REF
+  value: master
 objects:
 - apiVersion: v1
   kind: ImageStream
@@ -21,30 +25,30 @@ objects:
     tags:
     - from:
         kind: DockerImage
-        name: docker.io/library/fedora:${BASE_IMAGE_VERSION}
+        name: registry.fedoraproject.org/fedora:${BASE_IMAGE_VERSION}
       name: ${BASE_IMAGE_VERSION}
       importPolicy:
         scheduled: true
+#- apiVersion: v1
+#  kind: ImageStream
+#  metadata:
+#    labels:
+#      template: jenkins-openshift-images-builder
+#    name: source-origin
+#  spec:
+#    tags:
+#    - from:
+#        kind: DockerImage
+#        name: docker.io/openshift/origin:${OPENSHIFT_IMAGE_BUILD_VERSION}
+#      name: ${OPENSHIFT_IMAGE_BUILD_VERSION}
+#      importPolicy:
+#        scheduled: true
 - apiVersion: v1
   kind: ImageStream
   metadata:
     labels:
       template: jenkins-openshift-images-builder
-    name: source-origin
-  spec:
-    tags:
-    - from:
-        kind: DockerImage
-        name: docker.io/openshift/origin:${OPENSHIFT_IMAGE_BUILD_VERSION}
-      name: ${OPENSHIFT_IMAGE_BUILD_VERSION}
-      importPolicy:
-        scheduled: true
-- apiVersion: v1
-  kind: ImageStream
-  metadata:
-    labels:
-      template: jenkins-openshift-images-builder
-    name: source-node
+    name: source-origin-node
   spec:
     tags:
     - from:
@@ -113,7 +117,7 @@ objects:
   metadata:
     labels:
       template: jenkins-openshift-images-builder
-    name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-pre-cli
+    name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-origin-pre-cli
   spec:
     tags:
     - name: ${OPENSHIFT_IMAGE_BUILD_VERSION}
@@ -122,7 +126,7 @@ objects:
   metadata:
     labels:
       template: jenkins-openshift-images-builder
-    name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-cli
+    name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-origin-cli
   spec:
     tags:
     - name: ${OPENSHIFT_IMAGE_BUILD_VERSION}
@@ -131,7 +135,7 @@ objects:
   metadata:
     labels:
       template: jenkins-openshift-images-builder
-    name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-pre
+    name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-pre-origin
   spec:
     tags:
     - name: ${OPENSHIFT_IMAGE_BUILD_VERSION}
@@ -140,7 +144,7 @@ objects:
   metadata:
     labels:
       template: jenkins-openshift-images-builder
-    name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-origin
+    name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-origin-control-plane
   spec:
     tags:
     - name: ${OPENSHIFT_IMAGE_BUILD_VERSION}
@@ -149,7 +153,7 @@ objects:
   metadata:
     labels:
       template: jenkins-openshift-images-builder
-    name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-pre-node
+    name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-origin-pre-node
   spec:
     tags:
     - name: ${OPENSHIFT_IMAGE_BUILD_VERSION}
@@ -158,7 +162,7 @@ objects:
   metadata:
     labels:
       template: jenkins-openshift-images-builder
-    name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-node
+    name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-origin-node
   spec:
     tags:
     - name: ${OPENSHIFT_IMAGE_BUILD_VERSION}
@@ -171,15 +175,15 @@ objects:
   spec:
     tags:
     - name: ${OPENSHIFT_IMAGE_BUILD_VERSION}
-- apiVersion: v1
-  kind: ImageStream
-  metadata:
-    labels:
-      template: jenkins-openshift-images-builder
-    name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-openvswitch
-  spec:
-    tags:
-    - name: ${OPENSHIFT_IMAGE_BUILD_VERSION}
+#- apiVersion: v1
+#  kind: ImageStream
+#  metadata:
+#    labels:
+#      template: jenkins-openshift-images-builder
+#    name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-openvswitch
+#  spec:
+#    tags:
+#    - name: ${OPENSHIFT_IMAGE_BUILD_VERSION}
 - apiVersion: v1
   kind: ImageStream
   metadata:
@@ -267,7 +271,8 @@ objects:
     source:
       contextDir: source
       git:
-        uri: https://github.com/dsevost/origin-fedora
+        uri: ${SOURCE_REPOSITORY_URL}
+        ref: ${SOURCE_REPOSITORY_REF}
       type: Git
     strategy:
       dockerStrategy:
@@ -290,7 +295,8 @@ objects:
     source:
       contextDir: etcd
       git:
-        uri: https://github.com/dsevost/origin-fedora
+        uri: ${SOURCE_REPOSITORY_URL}
+        ref: ${SOURCE_REPOSITORY_REF}
       type: Git
     strategy:
       dockerStrategy:
@@ -313,7 +319,8 @@ objects:
     source:
       contextDir: base
       git:
-        uri: https://github.com/dsevost/origin-fedora
+        uri: ${SOURCE_REPOSITORY_URL}
+        ref: ${SOURCE_REPOSITORY_REF}
       type: Git
     strategy:
       dockerStrategy:
@@ -340,10 +347,14 @@ objects:
       images:
       - from:
           kind: ImageStreamTag
-          name: source-origin:${OPENSHIFT_IMAGE_BUILD_VERSION}
+          name: source-origin-node:${OPENSHIFT_IMAGE_BUILD_VERSION}
         paths:
-        - destinationDir: tmp
+        - name: oc
+          destinationDir: tmp
           sourcePath: /usr/bin/oc
+        - name: oc
+          destinationDir: tmp
+          sourcePath: /usr/bin/oadm
       type: Dockerfile
     strategy:
       dockerStrategy:
@@ -366,7 +377,8 @@ objects:
     source:
       contextDir: cli
       git:
-        uri: https://github.com/dsevost/origin-fedora
+        uri: ${SOURCE_REPOSITORY_URL}
+        ref: ${SOURCE_REPOSITORY_REF}
       type: Git
     strategy:
       dockerStrategy:
@@ -422,7 +434,8 @@ objects:
     source:
       contextDir: origin
       git:
-        uri: https://github.com/dsevost/origin-fedora
+        uri: ${SOURCE_REPOSITORY_URL}
+        ref: ${SOURCE_REPOSITORY_REF}
       type: Git
     strategy:
       dockerStrategy:
@@ -481,7 +494,8 @@ objects:
     source:
       contextDir: node
       git:
-        uri: https://github.com/dsevost/origin-fedora
+        uri: ${SOURCE_REPOSITORY_URL}
+        ref: ${SOURCE_REPOSITORY_REF}
       type: Git
     strategy:
       dockerStrategy:
@@ -504,7 +518,8 @@ objects:
     source:
       contextDir: openvswitch
       git:
-        uri: https://github.com/dsevost/origin-fedora
+        uri: ${SOURCE_REPOSITORY_URL}
+        ref: ${SOURCE_REPOSITORY_REF}
       type: Git
     strategy:
       dockerStrategy:
@@ -672,7 +687,8 @@ objects:
     source:
       contextDir: router/haproxy
       git:
-        uri: https://github.com/dsevost/origin-fedora
+        uri: ${SOURCE_REPOSITORY_URL}
+        ref: ${SOURCE_REPOSITORY_REF}
       type: Git
     strategy:
       dockerStrategy:
@@ -695,7 +711,8 @@ objects:
     source:
       contextDir: router/nginx
       git:
-        uri: https://github.com/dsevost/origin-fedora
+        uri: ${SOURCE_REPOSITORY_URL}
+        ref: ${SOURCE_REPOSITORY_REF}
       type: Git
     strategy:
       dockerStrategy:
@@ -748,7 +765,8 @@ objects:
     source:
       contextDir: registry
       git:
-        uri: https://github.com/dsevost/origin-fedora
+        uri: ${SOURCE_REPOSITORY_URL}
+        ref: ${SOURCE_REPOSITORY_REF}
       type: Git
     strategy:
       dockerStrategy:
