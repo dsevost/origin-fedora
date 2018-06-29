@@ -29,20 +29,6 @@ objects:
       name: ${BASE_IMAGE_VERSION}
       importPolicy:
         scheduled: true
-#- apiVersion: v1
-#  kind: ImageStream
-#  metadata:
-#    labels:
-#      template: jenkins-openshift-images-builder
-#    name: source-origin
-#  spec:
-#    tags:
-#    - from:
-#        kind: DockerImage
-#        name: docker.io/openshift/origin:${OPENSHIFT_IMAGE_BUILD_VERSION}
-#      name: ${OPENSHIFT_IMAGE_BUILD_VERSION}
-#      importPolicy:
-#        scheduled: true
 - apiVersion: v1
   kind: ImageStream
   metadata:
@@ -53,10 +39,24 @@ objects:
     tags:
     - from:
         kind: DockerImage
-        name: docker.io/openshift/node:${OPENSHIFT_IMAGE_BUILD_VERSION}
-      name: ${OPENSHIFT_IMAGE_BUILD_VERSION}
+        name: docker.io/openshift/origin-node:${OPENSHIFT_IMAGE_BUILD_VERSION}
       importPolicy:
         scheduled: true
+      name: ${OPENSHIFT_IMAGE_BUILD_VERSION}
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    labels:
+      template: jenkins-openshift-images-builder
+    name: source-origin-hypershift
+  spec:
+    tags:
+    - from:
+        kind: DockerImage
+        name: docker.io/openshift/origin-hypershift:${OPENSHIFT_IMAGE_BUILD_VERSION}
+      importPolicy:
+        scheduled: true
+      name: ${OPENSHIFT_IMAGE_BUILD_VERSION}
 - apiVersion: v1
   kind: ImageStream
   metadata:
@@ -90,7 +90,7 @@ objects:
   metadata:
     labels:
       template: jenkins-openshift-images-builder
-    name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-source
+    name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-origin-source
   spec:
     tags:
     - name: ${OPENSHIFT_IMAGE_BUILD_VERSION}
@@ -108,7 +108,7 @@ objects:
   metadata:
     labels:
       template: jenkins-openshift-images-builder
-    name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-base
+    name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-origin-base
   spec:
     tags:
     - name: ${OPENSHIFT_IMAGE_BUILD_VERSION}
@@ -136,6 +136,24 @@ objects:
     labels:
       template: jenkins-openshift-images-builder
     name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-pre-origin
+  spec:
+    tags:
+    - name: ${OPENSHIFT_IMAGE_BUILD_VERSION}
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    labels:
+      template: jenkins-openshift-images-builder
+    name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-origin-hyperkube
+  spec:
+    tags:
+    - name: ${OPENSHIFT_IMAGE_BUILD_VERSION}
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    labels:
+      template: jenkins-openshift-images-builder
+    name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-origin-hypershift
   spec:
     tags:
     - name: ${OPENSHIFT_IMAGE_BUILD_VERSION}
@@ -175,15 +193,6 @@ objects:
   spec:
     tags:
     - name: ${OPENSHIFT_IMAGE_BUILD_VERSION}
-#- apiVersion: v1
-#  kind: ImageStream
-#  metadata:
-#    labels:
-#      template: jenkins-openshift-images-builder
-#    name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-openvswitch
-#  spec:
-#    tags:
-#    - name: ${OPENSHIFT_IMAGE_BUILD_VERSION}
 - apiVersion: v1
   kind: ImageStream
   metadata:
@@ -243,7 +252,7 @@ objects:
   metadata:
     labels:
       template: jenkins-openshift-images-builder
-    name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-pre-registry
+    name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-origin-pre-docker-registry
   spec:
     tags:
     - name: ${OPENSHIFT_IMAGE_BUILD_VERSION}
@@ -261,13 +270,13 @@ objects:
   metadata:
     labels:
       template: jenkins-openshift-images-builder
-    name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-source
+    name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-origin-source
   spec:
     runPolicy: SerialLatestOnly
     output:
       to:
         kind: ImageStreamTag
-        name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-source:${OPENSHIFT_IMAGE_BUILD_VERSION}
+        name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-origin-source:${OPENSHIFT_IMAGE_BUILD_VERSION}
     source:
       contextDir: source
       git:
@@ -302,20 +311,20 @@ objects:
       dockerStrategy:
         from:
           kind: ImageStreamTag
-          name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-source:${OPENSHIFT_IMAGE_BUILD_VERSION}
+          name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-origin-source:${OPENSHIFT_IMAGE_BUILD_VERSION}
       type: Docker
 - apiVersion: v1
   kind: BuildConfig
   metadata:
     labels:
       template: jenkins-openshift-images-builder
-    name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-base
+    name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-origin-base
   spec:
     runPolicy: SerialLatestOnly
     output:
       to:
         kind: ImageStreamTag
-        name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-base:${OPENSHIFT_IMAGE_BUILD_VERSION}
+        name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-origin-base:${OPENSHIFT_IMAGE_BUILD_VERSION}
     source:
       contextDir: base
       git:
@@ -326,53 +335,54 @@ objects:
       dockerStrategy:
         from:
           kind: ImageStreamTag
-          name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-source:${OPENSHIFT_IMAGE_BUILD_VERSION}
+          name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-origin-source:${OPENSHIFT_IMAGE_BUILD_VERSION}
       type: Docker
 - apiVersion: v1
   kind: BuildConfig
   metadata:
     labels:
       template: jenkins-openshift-images-builder
-    name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-pre-cli
+    name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-origin-pre-cli
   spec:
     runPolicy: SerialLatestOnly
     output:
       to:
         kind: ImageStreamTag
-        name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-pre-cli:${OPENSHIFT_IMAGE_BUILD_VERSION}
+        name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-origin-pre-cli:${OPENSHIFT_IMAGE_BUILD_VERSION}
     source:
       dockerfile: |-
         FROM base
-        COPY tmp/oc /usr/bin/
+        COPY tmp/oc tmp/oadm /usr/bin/
+        COPY tmp-etc/oc /etc/bash_completion.d/
       images:
       - from:
           kind: ImageStreamTag
           name: source-origin-node:${OPENSHIFT_IMAGE_BUILD_VERSION}
         paths:
-        - name: oc
-          destinationDir: tmp
+        - destinationDir: tmp
           sourcePath: /usr/bin/oc
-        - name: oc
-          destinationDir: tmp
+        - destinationDir: tmp
           sourcePath: /usr/bin/oadm
+        - destinationDir: tmp-etc
+          sourcePath: /etc/bash_completion.d/oc
       type: Dockerfile
     strategy:
       dockerStrategy:
         from:
           kind: ImageStreamTag
-          name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-base:${OPENSHIFT_IMAGE_BUILD_VERSION}
+          name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-origin-base:${OPENSHIFT_IMAGE_BUILD_VERSION}
       type: Docker
 - apiVersion: v1
   kind: BuildConfig
   metadata:
     labels:
       template: jenkins-openshift-images-builder
-    name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-cli
+    name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-origin-cli
   spec:
     output:
       to:
         kind: ImageStreamTag
-        name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-cli:${OPENSHIFT_IMAGE_BUILD_VERSION}
+        name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-origin-cli:${OPENSHIFT_IMAGE_BUILD_VERSION}
     runPolicy: SerialLatestOnly
     source:
       contextDir: cli
@@ -387,20 +397,86 @@ objects:
           value: ${BASE_IMAGE_VERSION}
         from:
           kind: ImageStreamTag
-          name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-pre-cli:${OPENSHIFT_IMAGE_BUILD_VERSION}
+          name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-origin-pre-cli:${OPENSHIFT_IMAGE_BUILD_VERSION}
       type: Docker
 - apiVersion: v1
   kind: BuildConfig
   metadata:
     labels:
       template: jenkins-openshift-images-builder
-    name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-pre
+    name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-origin-hyperkube
+  spec:
+    output:
+      to:
+        kind: ImageStreamTag
+        name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-origin-hyperkube:${OPENSHIFT_IMAGE_BUILD_VERSION}
+    runPolicy: SerialLatestOnly
+    source:
+      dockerfile: |-
+        FROM origin-base
+        COPY tmp/hyperkube /usr/bin/
+        LABEL io.k8s.display-name="OpenShift Kubernetes Server Commands" \
+          io.k8s.description="OpenShift is a platform for developing, building, and deploying containerized applications." \
+          io.openshift.tags="openshift,hyperkube"
+      images:
+      - from:
+          kind: ImageStreamTag
+          name: source-origin-node:${OPENSHIFT_IMAGE_BUILD_VERSION}
+        paths:
+        - destinationDir: tmp
+          sourcePath: /usr/bin/hyperkube
+      type: Dockerfile
+    strategy:
+      dockerStrategy:
+        from:
+          kind: ImageStreamTag
+          name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-origin-base:${OPENSHIFT_IMAGE_BUILD_VERSION}
+      type: Docker
+- apiVersion: v1
+  kind: BuildConfig
+  metadata:
+    labels:
+      template: jenkins-openshift-images-builder
+    name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-origin-hypershift
+  spec:
+    output:
+      to:
+        kind: ImageStreamTag
+        name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-origin-hypershift:${OPENSHIFT_IMAGE_BUILD_VERSION}
+    runPolicy: SerialLatestOnly
+    source:
+      dockerfile: |-
+        FROM origin-base
+        COPY tmp/hypershift /usr/bin/
+        LABEL io.k8s.display-name="OpenShift Kubernetes Server Commands" \
+          io.k8s.description="OpenShift is a platform for developing, building, and deploying containerized applications." \
+          io.openshift.tags="openshift,hypershift"
+      images:
+      - from:
+          kind: ImageStreamTag
+          name: source-origin-hypershift:${OPENSHIFT_IMAGE_BUILD_VERSION}
+        paths:
+        - destinationDir: tmp
+          sourcePath: /usr/bin/hypershift
+      type: Dockerfile
+    strategy:
+      dockerStrategy:
+        from:
+          kind: ImageStreamTag
+          name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-origin-base:${OPENSHIFT_IMAGE_BUILD_VERSION}
+      type: Docker
+- apiVersion: v1
+  kind: BuildConfig
+  metadata:
+    labels:
+      template: jenkins-openshift-images-builder
+    name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-pre-origin
   spec:
     runPolicy: SerialLatestOnly
     output:
       to:
         kind: ImageStreamTag
-        name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-pre:${OPENSHIFT_IMAGE_BUILD_VERSION}
+        name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-pre-origin:${OPENSHIFT_IMAGE_BUILD_VERSION}
     source:
       dockerfile: |-
         FROM cli
@@ -408,7 +484,7 @@ objects:
       images:
       - from:
           kind: ImageStreamTag
-          name: source-origin:${OPENSHIFT_IMAGE_BUILD_VERSION}
+          name: source-origin-node:${OPENSHIFT_IMAGE_BUILD_VERSION}
         paths:
         - destinationDir: tmp
           sourcePath: /usr/bin/openshift
@@ -417,20 +493,20 @@ objects:
       dockerStrategy:
         from:
           kind: ImageStreamTag
-          name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-cli:${OPENSHIFT_IMAGE_BUILD_VERSION}
+          name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-origin-cli:${OPENSHIFT_IMAGE_BUILD_VERSION}
       type: Docker
 - apiVersion: v1
   kind: BuildConfig
   metadata:
     labels:
       template: jenkins-openshift-images-builder
-    name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-origin
+    name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-origin-control-plane
   spec:
     runPolicy: SerialLatestOnly
     output:
       to:
         kind: ImageStreamTag
-        name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-origin:${OPENSHIFT_IMAGE_BUILD_VERSION}
+        name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-origin-control-plane:${OPENSHIFT_IMAGE_BUILD_VERSION}
     source:
       contextDir: origin
       git:
@@ -441,20 +517,20 @@ objects:
       dockerStrategy:
         from:
           kind: ImageStreamTag
-          name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-pre:${OPENSHIFT_IMAGE_BUILD_VERSION}
+          name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-pre-origin:${OPENSHIFT_IMAGE_BUILD_VERSION}
       type: Docker
 - apiVersion: v1
   kind: BuildConfig
   metadata:
     labels:
       template: jenkins-openshift-images-builder
-    name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-pre-node
+    name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-origin-pre-node
   spec:
     runPolicy: SerialLatestOnly
     output:
       to:
         kind: ImageStreamTag
-        name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-pre-node:${OPENSHIFT_IMAGE_BUILD_VERSION}
+        name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-origin-pre-node:${OPENSHIFT_IMAGE_BUILD_VERSION}
     source:
       dockerfile: |-
         FROM origin
@@ -477,20 +553,20 @@ objects:
       dockerStrategy:
         from:
           kind: ImageStreamTag
-          name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-origin:${OPENSHIFT_IMAGE_BUILD_VERSION}
+          name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-origin-control-plane:${OPENSHIFT_IMAGE_BUILD_VERSION}
       type: Docker
 - apiVersion: v1
   kind: BuildConfig
   metadata:
     labels:
       template: jenkins-openshift-images-builder
-    name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-node
+    name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-origin-node
   spec:
     runPolicy: SerialLatestOnly
     output:
       to:
         kind: ImageStreamTag
-        name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-node:${OPENSHIFT_IMAGE_BUILD_VERSION}
+        name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-origin-node:${OPENSHIFT_IMAGE_BUILD_VERSION}
     source:
       contextDir: node
       git:
@@ -502,30 +578,6 @@ objects:
         from:
           kind: ImageStreamTag
           name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-pre-node:${OPENSHIFT_IMAGE_BUILD_VERSION}
-      type: Docker
-- apiVersion: v1
-  kind: BuildConfig
-  metadata:
-    labels:
-      template: jenkins-openshift-images-builder
-    name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-openvswitch
-  spec:
-    output:
-      to:
-        kind: ImageStreamTag
-        name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-openvswitch:${OPENSHIFT_IMAGE_BUILD_VERSION}
-    runPolicy: SerialLatestOnly
-    source:
-      contextDir: openvswitch
-      git:
-        uri: ${SOURCE_REPOSITORY_URL}
-        ref: ${SOURCE_REPOSITORY_REF}
-      type: Git
-    strategy:
-      dockerStrategy:
-        from:
-          kind: ImageStreamTag
-          name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-node:${OPENSHIFT_IMAGE_BUILD_VERSION}
       type: Docker
 - apiVersion: v1
   kind: BuildConfig
