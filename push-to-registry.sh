@@ -10,19 +10,22 @@ REGISTRY_PREFIX_REMOTE=${REGISTRY_PREFIX_REMOTE:-"quay.io/dsevosty"}
 
 IMAGES="\
 etcd \
-cli \
-origin \
-node \
-openvswitch \
-origin-pod
+origin-cli \
+origin-control-plane \
+origin-hyperkube \
+origin-hypershift \
+origin-node \
+origin-pod \
 origin-deployer \
 origin-docker-builder \
 origin-sti-builder \
 origin-docker-registry \
 origin-nginx-router \
 origin-haproxy-router \
+origin-recycler \
 "
 for i in $IMAGES ; do
+    echo "Uploading image: $i:$VER"
     skopeo copy \
 	docker://$REGISTRY_PREFIX_LOCAL/${BUILD_PREFIX}$i:$VER \
 	docker://$REGISTRY_PREFIX_REMOTE/${PUSH_PREFIX}$i:$VER

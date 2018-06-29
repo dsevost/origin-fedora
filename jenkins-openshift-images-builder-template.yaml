@@ -536,7 +536,7 @@ objects:
         FROM origin
         COPY tmp1 /etc/
         COPY tmp2 /opt/
-        COPY tmp3 /openshift-node-config /usr/bin/
+        COPY tmp3/openshift-node-config /usr/bin/
       images:
       - from:
           kind: ImageStreamTag
@@ -837,26 +837,23 @@ objects:
       jenkinsPipelineStrategy:
         jenkinsfile: |-
           def appName="${BUILD_PREFIX}-${BASE_IMAGE_VERSION}"
-          def project=""
-          def project_current=""
 
           node {
-            project = env.PROJECT_NAME
-            echo "CI/CD project name is ${project_current}"
+            echo "CI/CD project name is " + env.PROJECT_NAME
 
             def simpleBuild = { suffix ->
-              stage("build-$suffix") {
+              stage("build-${suffix}") {
                 openshiftBuild(namespace: "${project}", buildConfig: "${appName}-${suffix}", showBuildLogs: 'true')
               }
             }
 
-            [ "origin-source", "origin-base", "etcd", "origin-pre-cli", "origin-cli", "pre-origin", "origin-control-plane",
-              "origin-hyperkube", "origin-hypershift", "origin-pre-node", "origin-node" ].each {
+            [ "origin-source", "origin-base", "etcd", "origin-hyperkube", "origin-hypershift", "origin-pre-cli",
+              "origin-cli", "pre-origin", "origin-control-plane", "origin-pre-node", "origin-node" ].each {
                bc -> simpleBuild(bc)
             }
 
             [ "origin-pod", "origin-deployer", "origin-docker-builder", "origin-sti-builder", "origin-recycler",
-              "origin-haproxy-router", "origin-nginx-router", "pre-registry", "origin-docker-registry" ].each {
+              "origin-haproxy-router", "origin-nginx-router", "origin-pre-docker-registry", "origin-docker-registry" ].each {
               bc -> simpleBuild(bc)
             }
           }
