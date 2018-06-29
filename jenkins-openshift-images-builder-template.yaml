@@ -536,11 +536,11 @@ objects:
         FROM origin
         COPY tmp1 /etc/
         COPY tmp2 /opt/
-        COPY tmp4/openshift-node-config /usr/bin/
+        COPY tmp3 /openshift-node-config /usr/bin/
       images:
       - from:
           kind: ImageStreamTag
-          name: source-node:${OPENSHIFT_IMAGE_BUILD_VERSION}
+          name: source-origin-node:${OPENSHIFT_IMAGE_BUILD_VERSION}
         paths:
         - destinationDir: tmp1
           sourcePath: /etc/cni
@@ -577,7 +577,7 @@ objects:
       dockerStrategy:
         from:
           kind: ImageStreamTag
-          name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-pre-node:${OPENSHIFT_IMAGE_BUILD_VERSION}
+          name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-origin-pre-node:${OPENSHIFT_IMAGE_BUILD_VERSION}
       type: Docker
 - apiVersion: v1
   kind: BuildConfig
@@ -613,7 +613,7 @@ objects:
       dockerStrategy:
         from:
           kind: ImageStreamTag
-          name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-source:${OPENSHIFT_IMAGE_BUILD_VERSION}
+          name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-origin-source:${OPENSHIFT_IMAGE_BUILD_VERSION}
       type: Docker
 - apiVersion: v1
   kind: BuildConfig
@@ -641,7 +641,7 @@ objects:
       dockerStrategy:
         from:
           kind: ImageStreamTag
-          name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-origin:${OPENSHIFT_IMAGE_BUILD_VERSION}
+          name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-origin-control-plane:${OPENSHIFT_IMAGE_BUILD_VERSION}
       type: Docker
 - apiVersion: v1
   kind: BuildConfig
@@ -668,7 +668,7 @@ objects:
       dockerStrategy:
         from:
           kind: ImageStreamTag
-          name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-origin:${OPENSHIFT_IMAGE_BUILD_VERSION}
+          name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-origin-control-plane:${OPENSHIFT_IMAGE_BUILD_VERSION}
       type: Docker
 - apiVersion: v1
   kind: BuildConfig
@@ -695,7 +695,7 @@ objects:
       dockerStrategy:
         from:
           kind: ImageStreamTag
-          name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-origin:${OPENSHIFT_IMAGE_BUILD_VERSION}
+          name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-origin-control-plane:${OPENSHIFT_IMAGE_BUILD_VERSION}
       type: Docker
 - apiVersion: v1
   kind: BuildConfig
@@ -722,7 +722,7 @@ objects:
       dockerStrategy:
         from:
           kind: ImageStreamTag
-          name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-origin:${OPENSHIFT_IMAGE_BUILD_VERSION}
+          name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-origin-control-plane:${OPENSHIFT_IMAGE_BUILD_VERSION}
       type: Docker
 - apiVersion: v1
   kind: BuildConfig
@@ -746,7 +746,7 @@ objects:
       dockerStrategy:
         from:
           kind: ImageStreamTag
-          name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-origin:${OPENSHIFT_IMAGE_BUILD_VERSION}
+          name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-origin-control-plane:${OPENSHIFT_IMAGE_BUILD_VERSION}
       type: Docker
 - apiVersion: v1
   kind: BuildConfig
@@ -770,19 +770,19 @@ objects:
       dockerStrategy:
         from:
           kind: ImageStreamTag
-          name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-origin:${OPENSHIFT_IMAGE_BUILD_VERSION}
+          name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-origin-control-plane:${OPENSHIFT_IMAGE_BUILD_VERSION}
       type: Docker
 - apiVersion: v1
   kind: BuildConfig
   metadata:
     labels:
       template: jenkins-openshift-images-builder
-    name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-pre-registry
+    name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-origin-pre-registry
   spec:
     output:
       to:
         kind: ImageStreamTag
-        name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-pre-registry:${OPENSHIFT_IMAGE_BUILD_VERSION}
+        name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-origin-pre-registry:${OPENSHIFT_IMAGE_BUILD_VERSION}
     runPolicy: SerialLatestOnly
     source:
       dockerfile: |-
@@ -800,7 +800,7 @@ objects:
       dockerStrategy:
         from:
           kind: ImageStreamTag
-          name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-base:${OPENSHIFT_IMAGE_BUILD_VERSION}
+          name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-origin-base:${OPENSHIFT_IMAGE_BUILD_VERSION}
       type: Docker
 - apiVersion: v1
   kind: BuildConfig
@@ -824,7 +824,7 @@ objects:
       dockerStrategy:
         from:
           kind: ImageStreamTag
-          name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-pre-registry:${OPENSHIFT_IMAGE_BUILD_VERSION}
+          name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-origin-pre-registry:${OPENSHIFT_IMAGE_BUILD_VERSION}
       type: Docker
 - apiVersion: v1
   kind: BuildConfig
@@ -850,9 +850,10 @@ objects:
               }
             }
 
-            [ "source", "base", "etcd", "pre-cli", "cli", "pre", "origin", "pre-node", "node", "openvswitch" ].each {
-              bc -> simpleBuild(bc) 
+            [ "origin-source", "origin-base", "etcd", "origin-pre-cli", "origin-cli", "pre-origin", "origin-control-plane", "origin-pre-node", "origin-node" ].each {
+               bc -> simpleBuild(bc)
             }
+
             [ "origin-pod", "origin-deployer", "origin-docker-builder", "origin-sti-builder", "origin-recycler",
               "origin-haproxy-router", "origin-nginx-router", "pre-registry", "origin-docker-registry" ].each {
               bc -> simpleBuild(bc)
