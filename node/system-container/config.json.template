@@ -342,18 +342,19 @@
         },
         {
 	    "type": "bind",
-	    "source": "$ORIGIN_CONFIG_DIR/openvswitch",
-	    "destination": "/etc/openvswitch",
+	    "source": "$ORIGIN_DATA_DIR",
+	    "destination": "/var/lib/origin",
 	    "options": [
 		"rbind",
+		"rslave",
 		"rw",
 		"mode=755"
 	    ]
         },
         {
 	    "type": "bind",
-	    "source": "$ORIGIN_DATA_DIR",
-	    "destination": "/var/lib/origin",
+	    "source": "$KUBELET_DATA_DIR",
+	    "destination": "/var/lib/kubelet",
 	    "options": [
 		"rbind",
 		"rslave",
@@ -424,6 +425,16 @@
 	    ]
         },
         {
+            "type": "bind",
+            "source": "/var/lib/kubelet",
+            "destination": "/var/lib/kubelet",
+            "options": [
+                "rbind",
+                "rw",
+                "mode=755"
+            ]
+        },
+        {
 	    "type": "bind",
 	    "source": "/var/log",
 	    "destination": "/var/log",
@@ -444,14 +455,14 @@
 	    ]
         },
         {
-	    "type": "bind",
-	    "source": "$ORIGIN_CONFIG_DIR/sdn",
-	    "destination": "/etc/openshift-sdn",
-	    "options": [
-		"rbind",
-		"rw",
-		"mode=755"
-	    ]
+            "type": "bind",
+            "source": "/etc/origin/kubelet-plugins",
+            "destination": "/etc/origin/kubelet-plugins",
+            "options": [
+                "rbind",
+                "rslave",
+                "ro"
+            ]
         },
         {
 	    "type": "bind",
@@ -500,6 +511,16 @@
 		"rslave"
 	    ]
 	},
+        {
+	    "type": "bind",
+	    "source": "/etc/iscsi",
+	    "destination": "/etc/iscsi",
+	    "options": [
+		"rbind",
+		"rslave",
+		"ro"
+	    ]
+        },
         {
 	    "type": "bind",
 	    "source": "/var/lib/iscsi",

@@ -536,7 +536,7 @@ objects:
         FROM origin
         COPY tmp1 /etc/
         COPY tmp2 /opt/
-        COPY tmp3 /usr/
+        COPY tmp4/openshift-node-config /usr/bin/
       images:
       - from:
           kind: ImageStreamTag
@@ -547,7 +547,7 @@ objects:
         - destinationDir: tmp2
           sourcePath: /opt/cni
         - destinationDir: tmp3
-          sourcePath: /usr/lib/systemd/system/origin-node.service.d
+          sourcePath: /usr/bin/openshift-node-config
       type: Dockerfile
     strategy:
       dockerStrategy:

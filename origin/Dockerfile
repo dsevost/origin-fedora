@@ -25,7 +25,7 @@ ENTRYPOINT ["/usr/bin/openshift"]
 
 RUN \
     set -xe ; \
-    dnf install -y ceph-common && dnf clean all && \
+    dnf install --setopt=tsflags=nodocs -y ceph-common && dnf clean all && \
     setcap 'cap_net_bind_service=ep' /usr/bin/openshift ; \
     cd /usr/bin ; \
     LINKS="deploy docker-build extract-image-content \
