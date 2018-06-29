@@ -777,12 +777,12 @@ objects:
   metadata:
     labels:
       template: jenkins-openshift-images-builder
-    name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-origin-pre-registry
+    name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-origin-pre-docker-registry
   spec:
     output:
       to:
         kind: ImageStreamTag
-        name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-origin-pre-registry:${OPENSHIFT_IMAGE_BUILD_VERSION}
+        name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-origin-pre-docker-registry:${OPENSHIFT_IMAGE_BUILD_VERSION}
     runPolicy: SerialLatestOnly
     source:
       dockerfile: |-
@@ -824,7 +824,7 @@ objects:
       dockerStrategy:
         from:
           kind: ImageStreamTag
-          name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-origin-pre-registry:${OPENSHIFT_IMAGE_BUILD_VERSION}
+          name: ${BUILD_PREFIX}-${BASE_IMAGE_VERSION}-origin-pre-docker-registry:${OPENSHIFT_IMAGE_BUILD_VERSION}
       type: Docker
 - apiVersion: v1
   kind: BuildConfig
