@@ -15,27 +15,11 @@ LABEL io.k8s.display-name="OpenShift Origin Node" \
       io.openshift.tags="openshift,node"
 
 ENV \
+    OPENSHIFT_CONTAINERIZED=true \
     KUBECONFIG=/etc/origin/node/node.kubeconfig
 
 ENTRYPOINT [ "/usr/local/bin/origin-node-run.sh" ]
 
-COPY \
-    scripts/* \
-    /usr/local/bin/
-
-COPY \
-    system-container/system-container-wrapper.sh \
-    /usr/local/bin/
-
-COPY \
-    system-container/manifest.json \
-    system-container/config.json.template \
-    system-container/service.template \
-    system-container/tmpfiles.template \
-    /exports/
-
-#	origin-sdn-ovs \
-#	sysvinit-tools \
 RUN \
     INSTALL_PKGS="\
 	binutils \
@@ -70,5 +54,20 @@ RUN \
 	mkdir -p /exports/hostfs/opt/cni/bin && \
 	cp -r /opt/cni/bin/* /exports/hostfs/opt/cni/bin ; \
     fi
+
+COPY \
+    scripts/* \
+    /usr/local/bin/
+
+COPY \
+    system-container/system-container-wrapper.sh \
+    /usr/local/bin/
+
+COPY \
+    system-container/manifest.json \
+    system-container/config.json.template \
+    system-container/service.template \
+    system-container/tmpfiles.template \
+    /exports/
 
 VOLUME /etc/origin/node
