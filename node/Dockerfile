@@ -48,13 +48,6 @@ RUN \
     mkdir -p \
 	/usr/lib/systemd/system/{docker,origin-node}.service.d
 
-# Copy the cni plugins to the host file system when they are present, so that they can be shared with cri-o
-RUN \
-    if [ -d /opt/cni/bin ] ; then \
-	mkdir -p /exports/hostfs/opt/cni/bin && \
-	cp -r /opt/cni/bin/* /exports/hostfs/opt/cni/bin ; \
-    fi
-
 COPY \
     scripts/* \
     /usr/local/bin/
@@ -69,5 +62,3 @@ COPY \
     system-container/service.template \
     system-container/tmpfiles.template \
     /exports/
-
-VOLUME /etc/origin/node
